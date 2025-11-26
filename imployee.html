@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الموظف - نظام إدارة الملاعب</title>
+    
+    <!-- Bootstrap 5.3.3 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- التنسيقات الموحدة -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- الشريط الجانبي -->
+            <nav class="col-md-3 col-lg-2 sidebar d-md-block">
+                <div class="position-sticky pt-3">
+                    <div class="sidebar-brand text-center">
+                        <h4 class="mb-0 text-white">
+                            <i class="bi bi-person-badge me-2"></i>موظف الملعب
+                        </h4>
+                        <small class="text-white-50" id="userRoleDisplay">موظف</small>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#today-bookings" data-bs-toggle="tab">
+                                <i class="bi bi-calendar-day me-2"></i>حجوزات اليوم
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#checkin" data-bs-toggle="tab">
+                                <i class="bi bi-check-circle me-2"></i>تسجيل الحضور
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#payments" data-bs-toggle="tab">
+                                <i class="bi bi-cash-coin me-2"></i>المدفوعات النقدية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#stadiums" data-bs-toggle="tab">
+                                <i class="bi bi-building me-2"></i>الملاعب المسؤولة
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/" target="_blank">
+                                <i class="bi bi-globe me-2"></i>الموقع الرئيسي
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="sidebar-footer">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <small class="text-white-50" id="userInfoSidebar">مرحبًا</small>
+                            </div>
+                            <button class="btn btn-warning btn-sm" id="logoutBtn">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- المحتوى الرئيسي -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <!-- الهيدر -->
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div>
+                        <h1 class="h2" id="pageTitle">لوحة تحكم الموظف</h1>
+                        <small class="text-muted" id="userInfo">مرحبًا</small>
+                    </div>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshBtn">
+                                <i class="bi bi-arrow-clockwise me-1"></i>تحديث
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="showEmployeeHelp()">
+                                <i class="bi bi-question-circle me-1"></i>مساعدة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- نظام التنبيهات -->
+                <div id="alertsContainer"></div>
+
+                <!-- محتوى التبويبات -->
+                <div class="tab-content">
+                    <!-- تبويب حجوزات اليوم -->
+                    <div class="tab-pane fade show active" id="today-bookings">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4>حجوزات اليوم</h4>
+                            <div class="d-flex gap-2">
+                                <select class="form-select" id="todayStadiumSelect" style="width: auto;">
+                                    <option value="">جميع الملاعب</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="loadTodayBookings()">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>تحديث
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- إحصائيات سريعة -->
+                        <div class="row mb-4">
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-success text-white me-3">
+                                            <i class="bi bi-check-circle"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="confirmedBookingsCount">0</div>
+                                            <div class="stat-label">مؤكدة</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-warning text-white me-3">
+                                            <i class="bi bi-clock"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="pendingBookingsCount">0</div>
+                                            <div class="stat-label">قيد الانتظار</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-info text-white me-3">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="checkedInCount">0</div>
+                                            <div class="stat-label">تم الحضور</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-danger text-white me-3">
+                                            <i class="bi bi-x-circle"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="cancelledCount">0</div>
+                                            <div class="stat-label">ملغية</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- قائمة حجوزات اليوم -->
+                        <div class="row" id="todayBookingsContainer">
+                            <div class="col-12">
+                                <div class="text-center py-4">
+                                    <div class="loading-spinner mb-2"></div>
+                                    <p class="text-muted">جاري تحميل حجوزات اليوم...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب تسجيل الحضور -->
+                    <div class="tab-pane fade" id="checkin">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="card card-hover">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="mb-0"><i class="bi bi-check-circle me-2"></i>تسجيل حضور اللاعبين</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <label class="form-label">اختر الملعب</label>
+                                                <select class="form-select" id="checkinStadiumSelect">
+                                                    <option value="">اختر الملعب</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">تاريخ اليوم</label>
+                                                <input type="date" class="form-control" id="checkinDate" value="">
+                                            </div>
+                                        </div>
+
+                                        <div id="checkinBookingsList">
+                                            <div class="empty-state">
+                                                <i class="bi bi-calendar-check"></i>
+                                                <h5>اختر الملعب والتاريخ</h5>
+                                                <p>لعرض الحجوزات المتاحة للتسجيل</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card card-hover">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>الحجوزات النشطة</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="activeBookingsList" style="max-height: 400px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="bi bi-info-circle"></i>
+                                                <p>لا توجد حجوزات نشطة حالياً</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- مسح كود الحجز -->
+                                <div class="card card-hover mt-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0"><i class="bi bi-qr-code me-2"></i>مسح كود الحجز</h5>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <div class="mb-3">
+                                            <i class="bi bi-qr-code-scan" style="font-size: 3rem; color: #1a7f46;"></i>
+                                        </div>
+                                        <button class="btn btn-primary w-100 mb-2" onclick="startQRScanner()">
+                                            <i class="bi bi-camera me-1"></i>بدء المسح
+                                        </button>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="bookingCodeInput" placeholder="أدخل كود الحجز يدوياً">
+                                            <button class="btn btn-success" onclick="validateBookingCode()">
+                                                <i class="bi bi-check-lg"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب المدفوعات النقدية -->
+                    <div class="tab-pane fade" id="payments">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card card-hover">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h5 class="mb-0"><i class="bi bi-cash-coin me-2"></i>تسجيل دفعة نقدية</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="cashPaymentForm">
+                                            <div class="mb-3">
+                                                <label class="form-label">كود الحجز</label>
+                                                <input type="text" class="form-control" id="paymentBookingCode" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">المبلغ المدفوع</label>
+                                                <input type="number" class="form-control" id="paymentAmount" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">نوع الدفع</label>
+                                                <select class="form-select" id="paymentType" required>
+                                                    <option value="cash">نقدي</option>
+                                                    <option value="vodafone_cash">فودافون كاش</option>
+                                                    <option value="instapay">انستاباي</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">ملاحظات (اختياري)</label>
+                                                <textarea class="form-control" id="paymentNotes" rows="2"></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-success w-100">
+                                                <i class="bi bi-check-lg me-1"></i>تسجيل الدفعة
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card card-hover">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>المدفوعات اليوم</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>كود الحجز</th>
+                                                        <th>المبلغ</th>
+                                                        <th>الطريقة</th>
+                                                        <th>الوقت</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="todayPaymentsList">
+                                                    <tr>
+                                                        <td colspan="4" class="text-center text-muted py-3">لا توجد مدفوعات مسجلة اليوم</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="mt-3 p-3 bg-light rounded">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>إجمالي المدفوعات اليوم:</strong>
+                                                <span class="text-success" id="todayTotalPayments">0 ج.م</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب الملاعب المسؤولة -->
+                    <div class="tab-pane fade" id="stadiums">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4>الملاعب المسؤولة عنها</h4>
+                            <button class="btn btn-outline-primary" onclick="refreshEmployeeStadiums()">
+                                <i class="bi bi-arrow-clockwise me-1"></i>تحديث
+                            </button>
+                        </div>
+
+                        <div class="row" id="employeeStadiumsContainer">
+                            <div class="col-12">
+                                <div class="text-center py-4">
+                                    <div class="loading-spinner mb-2"></div>
+                                    <p class="text-muted">جاري تحميل الملاعب...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- جدول مواعيد الملاعب -->
+                        <div class="card card-hover mt-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="bi bi-calendar-week me-2"></i>جدول المواعيد الأسبوعي</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>الملعب</th>
+                                                <th>الإثنين</th>
+                                                <th>الثلاثاء</th>
+                                                <th>الأربعاء</th>
+                                                <th>الخميس</th>
+                                                <th>الجمعة</th>
+                                                <th>السبت</th>
+                                                <th>الأحد</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="weeklyScheduleTable">
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted py-4">جاري تحميل الجدول...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- المودالات -->
+    <!-- مودال تأكيد الحضور -->
+    <div class="modal fade modal-blur" id="confirmCheckinModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content modal-scale">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">تأكيد تسجيل الحضور</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="checkinBookingDetails"></div>
+                    <div class="mb-3">
+                        <label class="form-label">ملاحظات (اختياري)</label>
+                        <textarea class="form-control" id="checkinNotes" rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success" id="confirmCheckinBtn">تأكيد الحضور</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال مسح QR -->
+    <div class="modal fade modal-blur" id="qrScannerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content modal-scale">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">مسح كود الحجز</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="qrScannerContainer" style="width: 100%; height: 300px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                        <div class="text-muted">
+                            <i class="bi bi-camera" style="font-size: 3rem;"></i>
+                            <p class="mt-2">جاري تحميل الماسح الضوئي...</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary" onclick="simulateQRScan()">
+                            <i class="bi bi-play-circle me-1"></i>محاكاة المسح (للاختبار)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال مساعدة الموظف -->
+    <div class="modal fade modal-blur" id="employeeHelpModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-scale">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-question-circle me-2"></i>دليل الموظف
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>المهام اليومية:</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item">✅ تسجيل حضور اللاعبين</li>
+                                <li class="list-group-item">✅ استلام المدفوعات النقدية</li>
+                                <li class="list-group-item">✅ متابعة حجوزات اليوم</li>
+                                <li class="list-group-item">✅ التأكد من جاهزية الملاعب</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>الإجراءات السريعة:</h6>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-success" onclick="loadTodayBookings()">
+                                    <i class="bi bi-calendar-day me-1"></i>عرض حجوزات اليوم
+                                </button>
+                                <button class="btn btn-outline-primary" onclick="startQRScanner()">
+                                    <i class="bi bi-qr-code me-1"></i>مسح كود الحجز
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        // دوال خاصة بالموظف
+        let currentCheckinBooking = null;
+        let employeeStadiums = [];
+
+        // توسيع نظام الموظف
+        const originalSystem = window.system;
+
+        window.system = Object.assign({}, originalSystem, {
+            // دوال إضافية للموظف
+            async loadEmployeeData() {
+                await this.loadStadiums();
+                await this.loadTodayBookings();
+                await this.loadEmployeePayments();
+                this.updateEmployeeInterface();
+            },
+
+            async loadStadiums() {
+                try {
+                    const result = await this.apiCall('/api/employee/stadiums');
+                    this.systemData.stadiums = result.stadiums || [];
+                    employeeStadiums = this.systemData.stadiums;
+                    this.updateEmployeeStadiums();
+                } catch (error) {
+                    this.handleApiError(error, 'loadStadiums');
+                }
+            },
+
+            async loadTodayBookings(stadiumId = '') {
+                try {
+                    const today = new Date().toISOString().split('T')[0];
+                    let endpoint = `/api/employee/bookings?date=${today}`;
+                    
+                    if (stadiumId) {
+                        endpoint += `&stadium_id=${stadiumId}`;
+                    }
+
+                    const result = await this.apiCall(endpoint);
+                    this.systemData.bookings = result.bookings || [];
+                    this.updateTodayBookings();
+                    this.updateBookingStats();
+                } catch (error) {
+                    this.handleApiError(error, 'loadTodayBookings');
+                }
+            },
+
+            async loadEmployeePayments() {
+                try {
+                    const today = new Date().toISOString().split('T')[0];
+                    const result = await this.apiCall(`/api/employee/payments?date=${today}`);
+                    this.systemData.payments = result.payments || [];
+                    this.updateTodayPayments();
+                } catch (error) {
+                    this.handleApiError(error, 'loadEmployeePayments');
+                }
+            },
+
+            async checkinPlayer(bookingId, notes = '') {
+                try {
+                    const result = await this.apiCall(`/api/employee/bookings/${bookingId}/checkin`, 'POST', { notes });
+                    this.showAlert('✅ تم تسجيل حضور اللاعب بنجاح', 'success');
+                    await this.loadTodayBookings();
+                    await this.loadEmployeePayments();
+                    return result;
+                } catch (error) {
+                    this.handleApiError(error, 'checkinPlayer');
+                }
+            },
+
+            async processCashPayment(paymentData) {
+                try {
+                    const result = await this.apiCall('/api/employee/payments/cash', 'POST', paymentData);
+                    this.showAlert('✅ تم تسجيل الدفعة النقدية بنجاح', 'success');
+                    await this.loadEmployeePayments();
+                    return result;
+                } catch (error) {
+                    this.handleApiError(error, 'processCashPayment');
+                }
+            },
+
+            // تحديث واجهة الموظف
+            updateEmployeeInterface() {
+                this.updateEmployeeStadiums();
+                this.updateTodayBookings();
+                this.updateBookingStats();
+                this.updateTodayPayments();
+            },
+
+            updateEmployeeStadiums() {
+                const stadiumSelect = document.getElementById('todayStadiumSelect');
+                const checkinStadiumSelect = document.getElementById('checkinStadiumSelect');
+                
+                if (stadiumSelect) {
+                    stadiumSelect.innerHTML = '<option value="">جميع الملاعب</option>';
+                    employeeStadiums.forEach(stadium => {
+                        const option = document.createElement('option');
+                        option.value = stadium.id;
+                        option.textContent = stadium.name;
+                        stadiumSelect.appendChild(option);
+                    });
+                }
+
+                if (checkinStadiumSelect) {
+                    checkinStadiumSelect.innerHTML = '<option value="">اختر الملعب</option>';
+                    employeeStadiums.forEach(stadium => {
+                        const option = document.createElement('option');
+                        option.value = stadium.id;
+                        option.textContent = stadium.name;
+                        checkinStadiumSelect.appendChild(option);
+                    });
+                }
+
+                // تحديث قائمة الملاعب المسؤولة
+                const container = document.getElementById('employeeStadiumsContainer');
+                if (container && employeeStadiums.length > 0) {
+                    container.innerHTML = employeeStadiums.map(stadium => `
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card card-hover h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">${this.escapeHtml(stadium.name)}</h5>
+                                    <p class="text-muted">
+                                        <i class="bi bi-geo-alt me-1"></i>${this.escapeHtml(stadium.location)}
+                                    </p>
+                                    <p class="text-success fw-bold">${this.formatCurrency(stadium.price)}/ساعة</p>
+                                    <div class="mt-3">
+                                        <span class="badge ${stadium.is_active ? 'bg-success' : 'bg-secondary'}">
+                                            ${stadium.is_active ? 'نشط' : 'غير نشط'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            },
+
+            updateTodayBookings() {
+                const container = document.getElementById('todayBookingsContainer');
+                const checkinList = document.getElementById('checkinBookingsList');
+                
+                if (!container) return;
+
+                const todayBookings = this.systemData.bookings;
+
+                if (todayBookings.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <i class="bi bi-calendar-x"></i>
+                                <h5>لا توجد حجوزات لليوم</h5>
+                                <p>لا توجد حجوزات مبرمجة لهذا اليوم</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // تحديث قائمة حجوزات اليوم
+                container.innerHTML = todayBookings.map(booking => `
+                    <div class="col-lg-6 col-xl-4 mb-4">
+                        <div class="card booking-card ${this.getStatusBadgeClass(booking.status)} h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="card-title mb-0">${formatTimeDisplay(booking.start_time)} - ${formatTimeDisplay(booking.end_time)}</h6>
+                                    <span class="badge ${this.getStatusBadgeClass(booking.status)}">
+                                        ${this.getStatusText(booking.status)}
+                                    </span>
+                                </div>
+                                
+                                <p class="mb-2"><strong>اللاعب:</strong> ${this.escapeHtml(booking.customer_name)}</p>
+                                <p class="mb-2"><strong>الهاتف:</strong> ${booking.customer_phone || 'غير متوفر'}</p>
+                                <p class="mb-2"><strong>الملعب:</strong> ${this.escapeHtml(booking.pitch_name)}</p>
+                                
+                                <div class="booking-details mt-3">
+                                    <p class="mb-1"><strong>الإجمالي:</strong> ${this.formatCurrency(booking.total_amount)}</p>
+                                    <p class="mb-1"><strong>تم الدفع:</strong> ${booking.deposit_paid ? 'نعم' : 'لا'}</p>
+                                    <p class="mb-2 fw-bold text-danger">
+                                        <strong>المتبقي:</strong> ${this.formatCurrency(booking.total_amount - (booking.deposit_paid ? booking.deposit_amount : 0))}
+                                    </p>
+                                </div>
+
+                                <div class="booking-actions mt-3">
+                                    ${this.getEmployeeBookingActions(booking)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // تحديث قائمة تسجيل الحضور
+                if (checkinList) {
+                    const checkinBookings = todayBookings.filter(b => 
+                        b.status === 'booked_confirmed' || b.status === 'confirmed'
+                    );
+                    
+                    if (checkinBookings.length === 0) {
+                        checkinList.innerHTML = `
+                            <div class="empty-state">
+                                <i class="bi bi-calendar-check"></i>
+                                <h5>لا توجد حجوزات للتسجيل</h5>
+                                <p>جميع الحجوزات المؤكدة جاهزة للتسجيل</p>
+                            </div>
+                        `;
+                    } else {
+                        checkinList.innerHTML = checkinBookings.map(booking => `
+                            <div class="checkin-item p-3 border rounded mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">${this.escapeHtml(booking.customer_name)}</h6>
+                                        <p class="mb-1 text-muted">${formatTimeDisplay(booking.start_time)} - ${formatTimeDisplay(booking.end_time)}</p>
+                                        <p class="mb-0"><small>كود الحجز: <strong>${booking.booking_code}</strong></small></p>
+                                    </div>
+                                    <button class="btn btn-success btn-sm" onclick="showCheckinModal('${booking.id}')">
+                                        <i class="bi bi-check-circle me-1"></i>تسجيل
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            },
+
+            getEmployeeBookingActions(booking) {
+                let actions = '';
+                
+                if ((booking.status === 'booked_confirmed' || booking.status === 'confirmed') && !booking.checked_in) {
+                    actions += `
+                        <button class="btn btn-success btn-sm w-100 mb-2" onclick="showCheckinModal('${booking.id}')">
+                            <i class="bi bi-check-circle me-1"></i>تسجيل حضور
+                        </button>
+                    `;
+                }
+                
+                if (booking.status === 'pending' && booking.deposit_amount === 0) {
+                    actions += `
+                        <button class="btn btn-warning btn-sm w-100 mb-2" onclick="system.confirmBooking('${booking.id}')">
+                            <i class="bi bi-check-lg me-1"></i>تأكيد الحجز
+                        </button>
+                    `;
+                }
+
+                if (booking.checked_in) {
+                    actions += `
+                        <span class="badge bg-success w-100">
+                            <i class="bi bi-check2-circle me-1"></i>تم التسجيل
+                        </span>
+                    `;
+                }
+
+                return actions;
+            },
+
+            updateBookingStats() {
+                const todayBookings = this.systemData.bookings;
+                
+                const confirmed = todayBookings.filter(b => b.status === 'confirmed' || b.status === 'booked_confirmed').length;
+                const pending = todayBookings.filter(b => b.status === 'pending').length;
+                const checkedIn = todayBookings.filter(b => b.checked_in).length;
+                const cancelled = todayBookings.filter(b => b.status === 'cancelled').length;
+
+                document.getElementById('confirmedBookingsCount').textContent = confirmed;
+                document.getElementById('pendingBookingsCount').textContent = pending;
+                document.getElementById('checkedInCount').textContent = checkedIn;
+                document.getElementById('cancelledCount').textContent = cancelled;
+            },
+
+            updateTodayPayments() {
+                const container = document.getElementById('todayPaymentsList');
+                const totalElement = document.getElementById('todayTotalPayments');
+                
+                if (!container) return;
+
+                const todayPayments = this.systemData.payments;
+                const total = todayPayments.reduce((sum, payment) => sum + payment.amount, 0);
+
+                if (todayPayments.length === 0) {
+                    container.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">لا توجد مدفوعات مسجلة اليوم</td>
+                        </tr>
+                    `;
+                } else {
+                    container.innerHTML = todayPayments.map(payment => `
+                        <tr>
+                            <td>${payment.booking_code}</td>
+                            <td>${this.formatCurrency(payment.amount)}</td>
+                            <td>
+                                <span class="badge bg-secondary">${this.getPaymentMethodText(payment.provider)}</span>
+                            </td>
+                            <td>${this.formatTime(payment.created_at)}</td>
+                        </tr>
+                    `).join('');
+                }
+
+                if (totalElement) {
+                    totalElement.textContent = this.formatCurrency(total);
+                }
+            }
+        });
+
+        // دوال مساعدة للموظف
+        function loadTodayBookings() {
+            const stadiumId = document.getElementById('todayStadiumSelect').value;
+            system.loadTodayBookings(stadiumId);
+        }
+
+        function showCheckinModal(bookingId) {
+            const booking = system.systemData.bookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            currentCheckinBooking = bookingId;
+
+            document.getElementById('checkinBookingDetails').innerHTML = `
+                <div class="alert alert-info">
+                    <p><strong>اللاعب:</strong> ${system.escapeHtml(booking.customer_name)}</p>
+                    <p><strong>الملعب:</strong> ${system.escapeHtml(booking.pitch_name)}</p>
+                    <p><strong>الوقت:</strong> ${formatTimeDisplay(booking.start_time)} - ${formatTimeDisplay(booking.end_time)}</p>
+                    <p><strong>المبلغ:</strong> ${system.formatCurrency(booking.total_amount)}</p>
+                </div>
+            `;
+
+            document.getElementById('confirmCheckinBtn').onclick = () => {
+                const notes = document.getElementById('checkinNotes').value;
+                system.checkinPlayer(bookingId, notes);
+                bootstrap.Modal.getInstance(document.getElementById('confirmCheckinModal')).hide();
+            };
+
+            new bootstrap.Modal(document.getElementById('confirmCheckinModal')).show();
+        }
+
+        function startQRScanner() {
+            new bootstrap.Modal(document.getElementById('qrScannerModal')).show();
+            // في التطبيق الحقيقي، هنا سيتم تهيئة ماسح QR
+        }
+
+        function simulateQRScan() {
+            // محاكاة مسح كود حجز للاختبار
+            const testCodes = ['BOOK123', 'RESERVE456', 'STADIUM789'];
+            const randomCode = testCodes[Math.floor(Math.random() * testCodes.length)];
+            
+            document.getElementById('bookingCodeInput').value = randomCode;
+            system.showAlert(`تم محاكاة مسح الكود: ${randomCode}`, 'info');
+            bootstrap.Modal.getInstance(document.getElementById('qrScannerModal')).hide();
+        }
+
+        function validateBookingCode() {
+            const code = document.getElementById('bookingCodeInput').value.trim();
+            if (!code) {
+                system.showAlert('يرجى إدخال كود الحجز', 'warning');
+                return;
+            }
+
+            // البحث عن الحجز بالكود
+            const booking = system.systemData.bookings.find(b => 
+                b.booking_code === code || b.id === code
+            );
+
+            if (booking) {
+                showCheckinModal(booking.id);
+                document.getElementById('bookingCodeInput').value = '';
+            } else {
+                system.showAlert('كود الحجز غير صحيح أو غير موجود', 'danger');
+            }
+        }
+
+        function showEmployeeHelp() {
+            new bootstrap.Modal(document.getElementById('employeeHelpModal')).show();
+        }
+
+        function refreshEmployeeStadiums() {
+            system.loadStadiums();
+            system.showAlert('تم تحديث قائمة الملاعب', 'info');
+        }
+
+        // معالجة نموذج الدفع النقدي
+        document.getElementById('cashPaymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const bookingCode = document.getElementById('paymentBookingCode').value;
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const paymentType = document.getElementById('paymentType').value;
+            const notes = document.getElementById('paymentNotes').value;
+
+            if (!bookingCode || !amount) {
+                system.showAlert('يرجى ملء جميع الحقول المطلوبة', 'warning');
+                return;
+            }
+
+            await system.processCashPayment({
+                booking_code: bookingCode,
+                amount: amount,
+                provider: paymentType,
+                notes: notes,
+                method: 'cash'
+            });
+
+            // إعادة تعيين النموذج
+            document.getElementById('cashPaymentForm').reset();
+        });
+
+        // تهيئة إضافية للموظف
+        document.addEventListener('DOMContentLoaded', function() {
+            // تعيين تاريخ اليوم
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                if (!input.value) {
+                    input.value = today;
+                }
+            });
+
+            // تحديث قائمة تسجيل الحضور عند تغيير الملعب
+            const checkinStadiumSelect = document.getElementById('checkinStadiumSelect');
+            if (checkinStadiumSelect) {
+                checkinStadiumSelect.addEventListener('change', function() {
+                    const date = document.getElementById('checkinDate').value;
+                    if (this.value && date) {
+                        system.loadTodayBookings(this.value);
+                    }
+                });
+            }
+
+            const checkinDate = document.getElementById('checkinDate');
+            if (checkinDate) {
+                checkinDate.addEventListener('change', function() {
+                    const stadiumId = document.getElementById('checkinStadiumSelect').value;
+                    if (stadiumId && this.value) {
+                        system.loadTodayBookings(stadiumId);
+                    }
+                });
+            }
+
+            // تحميل بيانات الموظف
+            system.loadEmployeeData();
+        });
+    </script>
+</body>
+</html>
