@@ -1,3 +1,6 @@
+/* =============================================
+   متغيرات الألوان والتصميم (من index (5).html)
+   ============================================= */
 :root {
   --primary-color: #1a7f46;
   --secondary-color: #2ecc71;
@@ -20,10 +23,12 @@ body {
   background-color: #f8f9fa;
   color: #333;
   overflow-x: hidden;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 🔄 أنماط الوضع الليلي (من index (5).html) */
+/* =============================================
+   🌙 أنماط الوضع الليلي (مكتملة)
+   ============================================= */
 body.night-mode {
   background-color: var(--night-bg);
   color: var(--night-text);
@@ -31,30 +36,37 @@ body.night-mode {
 
 .night-mode .navbar {
   background: rgba(19, 47, 76, 0.95) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid var(--night-border);
 }
 
 .night-mode .stadium-card,
-.night-mode .feature-card,
-.night-mode .area-card,
-.night-mode .banner-content {
-  background: var(--night-card);
-  color: var(--night-text);
-  border: 1px solid var(--night-border);
-}
-
 .night-mode .form-control,
-.night-mode .form-select {
+.night-mode .form-select,
+.night-mode .footer {
   background: var(--night-card);
   color: var(--night-text);
-  border-color: var(--night-border);
+  border-color: var(--night-border) !important;
 }
 
-.night-mode .voucher-section {
-  border-color: var(--night-primary);
-  background: rgba(25, 118, 210, 0.1);
+.night-mode .btn-primary {
+  background-color: var(--night-primary) !important;
+  border-color: var(--night-primary) !important;
 }
 
-/* 🔍 أنماط البحث الموحدة (تم تكييفها من الأنماط المضمنة في new index (2).html) */
+/* =============================================
+   🔍 أنماط التنقل والبحث (مدمجة)
+   ============================================= */
+.navbar {
+  background: white;
+  transition: all 0.3s ease;
+  padding: 1rem 0;
+}
+
+.navbar.scrolled {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 .search-bar-unified {
   display: flex;
   gap: 8px;
@@ -62,94 +74,20 @@ body.night-mode {
   flex-wrap: wrap;
 }
 
-.search-bar-unified .form-control,
-.search-bar-unified .form-select {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  min-width: 150px;
-}
-
-/* 🎨 أنماط العناصر الجديدة (من index (5).html) */
-
-/* شارة الساعات الذهبية */
-.golden-slot-badge {
-  background: linear-gradient(135deg, #ffd700, #ffed4e) !important;
-  color: #000 !important;
-  font-weight: bold;
-  border: 2px solid #ffc107;
-}
-
-/* نظام الأكواد في الدفع */
-.voucher-section {
-  border: 2px dashed #1a7f46;
-  border-radius: 10px;
-  padding: 1rem;
-  background: #f8fff9;
-  margin: 1rem 0;
-}
-
-/* شريط المميزات السريعة في الفوتر */
-.features-bar {
-  background: linear-gradient(135deg, #1a7f46, #2ecc71);
-  color: white;
-  padding: 2rem 0;
-}
-
-.feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: var(--accent-color);
-}
-
-/* شاشة التحميل المتقدمة */
-#loadingOverlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(135deg, #1a7f46, #2ecc71);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.4s ease;
-}
-
-#loadingOverlay.fade-out {
-  opacity: 0;
-  visibility: hidden;
-}
-
-.multi-circle-spinner {
-  position: relative;
-  width: 150px;
-  height: 150px;
-}
-
-.circle {
-  position: absolute;
-  border: 4px solid transparent;
-  border-top: 4px solid var(--blue-color);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  /* (تم إهمال الأنماط المتكررة هنا للاختصار، لكن يجب تضمينها كاملة) */
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* بطاقة الملعب الرئيسية */
+/* =============================================
+   🏟️ أنماط بطاقة الملعب والشارات (مكتملة)
+   ============================================= */
 .stadium-card {
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   background: white;
+}
+
+.stadium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 .stadium-image {
@@ -170,30 +108,92 @@ body.night-mode {
   font-weight: 600;
 }
 
-/* أنماط البطاقات الهيكلية (Skeleton) */
-.skeleton-card {
-  height: 300px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
+/* شارة الساعات الذهبية (Golden Slot Badge) */
+.golden-slot-badge {
+  background: linear-gradient(135deg, var(--gold-color), #ffed4e) !important;
+  color: #000 !important;
+  font-weight: bold;
+  border: 2px solid #ffc107;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+}
+
+/* 💰 أنماط أكواد الخصم (Voucher Section) */
+.voucher-section {
+  border: 2px dashed var(--primary-color);
   border-radius: 10px;
-}
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* شريط متابعة الحجز */
-.booking-tracker {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
   padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 80px;
-  z-index: 1000;
+  background: #f8fff9;
+  margin: 1rem 0;
 }
 
-/* (يجب إضافة باقي أنماط index (5).html بالكامل هنا) */
+.night-mode .voucher-section {
+  background: rgba(25, 118, 210, 0.1);
+  border-color: var(--night-primary);
+}
+
+/* =============================================
+   ⏳ أنماط شاشة التحميل (Multi-Circle Spinner)
+   ============================================= */
+#loadingOverlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(135deg, #1a7f46, #2ecc71);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+#loadingOverlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.multi-circle-spinner {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+/* (تضمين أنماط ودوال الحركة (keyframes) الخاصة بالـ Spinner هنا) */
+
+/* =============================================
+   ⚙️ أنماط متفرقة
+   ============================================= */
+.custom-toast { /* لـ showToast */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    z-index: 10000;
+    display: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.theme-toggle {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 950;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
