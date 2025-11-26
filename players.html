@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لاعبوني معاكم - احجزلي</title>
+  
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #1a7f46;
+      --secondary-color: #2ecc71;
+      --accent-color: #f39c12;
+      --dark-color: #2c3e50;
+      --light-color: #ecf0f1;
+      --gold-color: #ffd700;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f8f9fa;
+    }
+    
+    .golden-slot-card {
+      background: linear-gradient(135deg, #fff9e6, #fff3cd);
+      border: 3px solid var(--gold-color);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+    }
+    
+    .golden-slot-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    }
+    
+    .golden-slot-card::before {
+      content: '👥 بحاجة للاعبين';
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: var(--gold-color);
+      color: #000;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      z-index: 2;
+    }
+    
+    .players-needed-badge {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .request-card {
+      border-right: 4px solid var(--primary-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      background: white;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .request-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .request-card.pending {
+      border-right-color: var(--accent-color);
+      background: #fffaf0;
+    }
+    
+    .request-card.accepted {
+      border-right-color: var(--secondary-color);
+      background: #f0fff4;
+    }
+    
+    .request-card.rejected {
+      border-right-color: #e74c3c;
+      background: #fff5f5;
+    }
+    
+    .stats-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stats-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stats-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    
+    .nav-links {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 1rem 0;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 600;
+      transition: opacity 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      opacity: 0.8;
+    }
+    
+    .filter-buttons {
+      background: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    
+    .time-badge {
+      background: var(--primary-color);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .join-btn {
+      background: linear-gradient(135deg, var(--gold-color), #ffed4e);
+      color: #000;
+      border: none;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+    
+    .join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
+    
+    .tab-content {
+      min-height: 500px;
+    }
+    
+    .activity-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    
+    .activity-indicator.active {
+      background: var(--secondary-color);
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .location-badge {
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+    }
+    
+    .custom-toast {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    
+    .toast-success {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+    }
+    
+    .toast-error {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    }
+    
+    .toast-warning {
+      background: linear-gradient(135deg, #f7971e, #ffd200);
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav-links">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <a class="navbar-brand text-white fw-bold" href="/">
+          <i class="bi bi-people-fill me-2"></i> لاعبوني معاكم
+        </a>
+        <div>
+          <a href="/">
+            <i class="bi bi-house me-1"></i> الرئيسية
+          </a>
+          <a href="/players-with-you" class="fw-bold">
+            <i class="bi bi-people me-1"></i> لاعبوني معاكم
+          </a>
+          <a href="/profile">
+            <i class="bi bi-person me-1"></i> ملفي الشخصي
+          </a>
+          <a href="#" onclick="logout()">
+            <i class="bi bi-box-arrow-left me-1"></i> تسجيل الخروج
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <!-- العنوان والإحصائيات -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="text-center mb-4">
+          <h1 class="display-4 fw-bold text-success">
+            <i class="bi bi-people-fill me-2"></i>لاعبوني معاكم ⚽
+          </h1>
+          <p class="lead text-muted">انضم إلى مباريات تحتاج لاعبين أو اطلب لاعبين لمباراتك</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- إحصائيات سريعة -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <div class="stats-number" id="totalGoldenSlots">0</div>
+          <div class="stats-label">ساعة ذهبية نشطة</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <div class="stats-number" id="totalRequests">0</div>
+          <div class="stats-label">طلب انضمام</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <div class="stats-number" id="acceptedRequests">0</div>
+          <div class="stats-label">طلب مقبول</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <div class="stats-number" id="activePlayers">0</div>
+          <div class="stats-label">لاعب نشط</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- تبويبات الصفحة -->
+    <ul class="nav nav-pills nav-justified mb-4" id="playersTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="golden-slots-tab" data-bs-toggle="tab" data-bs-target="#golden-slots" type="button">
+          <i class="bi bi-clock me-2"></i>الساعات الذهبية
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="my-requests-tab" data-bs-toggle="tab" data-bs-target="#my-requests" type="button">
+          <i class="bi bi-send me-2"></i>طلباتي المرسلة
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="received-requests-tab" data-bs-toggle="tab" data-bs-target="#received-requests" type="button">
+          <i class="bi bi-inbox me-2"></i>طلباتي المستلمة
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="how-it-works-tab" data-bs-toggle="tab" data-bs-target="#how-it-works" type="button">
+          <i class="bi bi-info-circle me-2"></i>كيف يعمل النظام
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="playersTabContent">
+      
+      <!-- تبويب الساعات الذهبية -->
+      <div class="tab-pane fade show active" id="golden-slots" role="tabpanel">
+        <!-- أزرار الفلترة -->
+        <div class="filter-buttons">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h5 class="mb-0">
+                <i class="bi bi-clock me-2 text-warning"></i>
+                الساعات التي تحتاج لاعبين
+                <span class="activity-indicator active" id="liveIndicator"></span>
+              </h5>
+            </div>
+            <div class="col-md-6 text-left">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary active" onclick="playersSystem.filterSlots('all')">الكل</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterSlots('today')">اليوم</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterSlots('tomorrow')">غداً</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterSlots('weekend')">نهاية الأسبوع</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- قائمة الساعات الذهبية -->
+        <div class="row" id="goldenSlotsContainer">
+          <div class="col-12">
+            <div class="empty-state">
+              <i class="bi bi-clock-history"></i>
+              <h5>جاري تحميل الساعات الذهبية...</h5>
+              <p>يتم تحديث البيانات تلقائياً</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- تبويب طلباتي المرسلة -->
+      <div class="tab-pane fade" id="my-requests" role="tabpanel">
+        <div class="filter-buttons">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h5 class="mb-0">
+                <i class="bi bi-send me-2 text-primary"></i>
+                طلبات الانضمام التي أرسلتها
+              </h5>
+            </div>
+            <div class="col-md-6 text-left">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary active" onclick="playersSystem.filterMyRequests('all')">الكل</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterMyRequests('pending')">قيد الانتظار</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterMyRequests('accepted')">مقبولة</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterMyRequests('rejected')">مرفوضة</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="myRequestsContainer">
+          <div class="empty-state">
+            <i class="bi bi-send"></i>
+            <h5>جاري تحميل الطلبات...</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- تبويب طلباتي المستلمة -->
+      <div class="tab-pane fade" id="received-requests" role="tabpanel">
+        <div class="filter-buttons">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h5 class="mb-0">
+                <i class="bi bi-inbox me-2 text-success"></i>
+                طلبات الانضمام التي تلقيتها
+              </h5>
+            </div>
+            <div class="col-md-6 text-left">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary active" onclick="playersSystem.filterReceivedRequests('all')">الكل</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterReceivedRequests('pending')">قيد الانتظار</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterReceivedRequests('accepted')">مقبولة</button>
+                <button class="btn btn-outline-primary" onclick="playersSystem.filterReceivedRequests('rejected')">مرفوضة</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="receivedRequestsContainer">
+          <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h5>جاري تحميل الطلبات...</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- تبويب كيف يعمل النظام -->
+      <div class="tab-pane fade" id="how-it-works" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h4 class="card-title text-center mb-4">
+                  <i class="bi bi-info-circle me-2 text-primary"></i>
+                  كيف يعمل نظام "لاعبوني معاكم"؟
+                </h4>
+                
+                <div class="row text-center">
+                  <div class="col-md-4 mb-4">
+                    <div class="p-3">
+                      <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-clock display-6"></i>
+                      </div>
+                      <h5>اختر ساعة ذهبية</h5>
+                      <p class="text-muted">ابحث عن الساعات التي تحتاج لاعبين إضافيين</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-4">
+                    <div class="p-3">
+                      <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-send display-6"></i>
+                      </div>
+                      <h5>أرسل طلب انضمام</h5>
+                      <p class="text-muted">قدم طلباً للانضمام مع معلوماتك وعدد اللاعبين</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-4">
+                    <div class="p-3">
+                      <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-people display-6"></i>
+                      </div>
+                      <h5>العب واستمتع</h5>
+                      <p class="text-muted">انتظر القبول وانضم للمباراة واستمتع باللعبة</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4">
+                  <h5>أسئلة شائعة</h5>
+                  <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                          كيف أعرف أن طلبي قد تم قبوله؟
+                        </button>
+                      </h2>
+                      <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                          ستتلقى إشعاراً فوراً عند قبول طلبك، ويمكنك متابعة حالة الطلب من تبويب "طلباتي المرسلة"
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                          هل يمكنني إلغاء طلب الانضمام بعد إرساله؟
+                        </button>
+                      </h2>
+                      <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                          نعم، يمكنك إلغاء الطلب في أي وقت قبل قبوله من قبل منظم المباراة
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                          كيف أطلب لاعبين إضافيين لحجزي؟
+                        </button>
+                      </h2>
+                      <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                          من صفحة ملفك الشخصي، اضغط على "طلب لاعبين" في تفاصيل الحجز، وسيظهر حجزك في الساعات الذهبية
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال طلب الانضمام -->
+  <div class="modal fade" id="joinRequestModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-person-plus me-2"></i>طلب الانضمام للمباراة
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="slotDetails" class="mb-3"></div>
+          <form id="joinRequestForm">
+            <input type="hidden" id="selectedTimeSlotId">
+            
+            <div class="mb-3">
+              <label class="form-label">اسمك الكامل</label>
+              <input type="text" class="form-control" id="requesterName" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">عمرك</label>
+              <input type="number" class="form-control" id="requesterAge" min="15" max="60" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">عدد اللاعبين معك</label>
+              <input type="number" class="form-control" id="playersCount" min="1" max="10" value="1" required>
+              <div class="form-text">ادخل عدد اللاعبين الذين سينضمون معك للمباراة</div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">مستواك في اللعب</label>
+              <select class="form-select" id="skillLevel">
+                <option value="beginner">مبتدئ</option>
+                <option value="intermediate">متوسط</option>
+                <option value="advanced">متقدم</option>
+                <option value="expert">محترف</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">ملاحظة (اختياري)</label>
+              <textarea class="form-control" id="requestComment" rows="3" placeholder="أخبر المنظم عن مستواك في اللعب أو أي ملاحظات..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-warning w-100 text-white fw-bold" id="submitRequestBtn">
+              <i class="bi bi-send me-2"></i>إرسال طلب الانضمام
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال تفاصيل الساعة الذهبية -->
+  <div class="modal fade" id="slotDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-info-circle me-2"></i>تفاصيل الساعة الذهبية
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="slotDetailsContent">
+          <!-- سيتم تعبئة التفاصيل هنا -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container"></div>
+
+  <!-- نموذج تقييم الملعب (ratingModal) -->
+  <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ratingModalLabel">تقييم ملعب <span id="ratingField" class="text-primary"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="ratingForm">
+            <input type="hidden" id="ratingBookingId">
+            <div class="mb-3 text-center">
+              <label class="form-label d-block">النجوم</label>
+              <div id="starRating" data-rating="0" class="d-inline-flex">
+                </div>
+            </div>
+            <div class="mb-3">
+              <label for="ratingComment" class="form-label">التعليق (اختياري)</label>
+              <textarea class="form-control" id="ratingComment" rows="3" maxlength="250" placeholder="ما رأيك بالملعب؟"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-primary" onclick="profileSystem.submitRating()">إرسال التقييم</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نموذج طلب اللاعبين (playerRequestModal) -->
+  <div class="modal fade" id="playerRequestModal" tabindex="-1" aria-labelledby="playerRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="playerRequestModalLabel">طلب لاعبين لحجز <span id="requestField" class="text-primary"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="playerRequestForm">
+            <input type="hidden" id="requestBookingId">
+            <div class="mb-3">
+              <label for="playersNeeded" class="form-label">عدد اللاعبين المطلوب</label>
+              <input type="number" class="form-control" id="playersNeeded" min="1" required placeholder="مثال: 3">
+              <div class="form-text">العدد الذي تحتاج إليه ليكتمل فريقك.</div>
+            </div>
+            <div class="mb-3">
+              <label for="requestNotes" class="form-label">ملاحظات إضافية (اختياري)</label>
+              <textarea class="form-control" id="requestNotes" rows="3" maxlength="250" placeholder="وقت الإحماء، مستوى اللعب المطلوب..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-success" onclick="profileSystem.createPlayerRequest()">نشر الطلب</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="text-center">
+      <div class="loading-spinner mb-3"></div>
+      <p class="text-muted">جاري التحميل...</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // 🎯 نظام لاعبوني معاكم المتكامل والمحسن
+    class PlayersSystem {
+      constructor() {
+        this.goldenSlots = [];
+        this.myRequests = [];
+        this.receivedRequests = [];
+        this.stats = {
+          totalGoldenSlots: 0,
+          totalRequests: 0,
+          acceptedRequests: 0,
+          activePlayers: 0
+        };
+        this.intervalId = null;
+        this.isAuthenticated = false;
+        this.authToken = localStorage.getItem('authToken');
+        this.userProfile = null;
+      }
+
+      async init() {
+        await this.checkAuth();
+        if (!this.isAuthenticated) return;
+
+        await this.loadUserProfile();
+        this.setupEventListeners();
+        await this.loadAllData();
+        this.startAutoRefresh();
+        this.prefillUserData();
+      }
+
+      async checkAuth() {
+        try {
+          if (!this.authToken) {
+            this.showToast('يجب تسجيل الدخول أولاً', 'error');
+            setTimeout(() => window.location.href = '/login.html', 2000);
+            return;
+          }
+
+          const response = await fetch('/api/auth/check', {
+            headers: {
+              'Authorization': `Bearer ${this.authToken}`
+            }
+          });
+
+          if (response.ok) {
+            this.isAuthenticated = true;
+          } else {
+            throw new Error('Not authenticated');
+          }
+        } catch (error) {
+          this.showToast('جلسة العمل منتهية، يرجى تسجيل الدخول مرة أخرى', 'error');
+          setTimeout(() => window.location.href = '/login.html', 2000);
+        }
+      }
+
+      async loadUserProfile() {
+        try {
+          const response = await this.safeFetch('/api/user/profile');
+          this.userProfile = response;
+          localStorage.setItem('userProfile', JSON.stringify(response));
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+        }
+      }
+
+      async safeFetch(url, options = {}) {
+        try {
+          const defaultOptions = {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authToken}`,
+              ...options.headers
+            }
+          };
+
+          const response = await fetch(url, { ...defaultOptions, ...options });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          console.error('Fetch error:', error);
+          throw error;
+        }
+      }
+
+      async loadAllData() {
+        try {
+          this.showLoading(true);
+          await Promise.all([
+            this.loadGoldenSlots(),
+            this.loadMyRequests(),
+            this.loadReceivedRequests(),
+            this.loadStats()
+          ]);
+          this.showLoading(false);
+        } catch (error) {
+          console.error('Error loading players data:', error);
+          this.showToast('حدث خطأ في تحميل البيانات', 'error');
+          this.showLoading(false);
+        }
+      }
+
+      async loadGoldenSlots() {
+        try {
+          const data = await this.safeFetch('/api/golden-slots');
+          this.goldenSlots = data;
+          this.displayGoldenSlots();
+          this.updateStats();
+        } catch (error) {
+          console.error('Error loading golden slots:', error);
+          this.goldenSlots = [];
+          this.displayGoldenSlots();
+        }
+      }
+
+      async loadMyRequests() {
+        try {
+          const data = await this.safeFetch('/api/user/player-requests/sent');
+          this.myRequests = data;
+          this.displayMyRequests();
+          this.updateStats();
+        } catch (error) {
+          console.error('Error loading my requests:', error);
+          this.myRequests = [];
+          this.displayMyRequests();
+        }
+      }
+
+      async loadReceivedRequests() {
+        try {
+          const data = await this.safeFetch('/api/user/player-requests/received');
+          this.receivedRequests = data;
+          this.displayReceivedRequests();
+          this.updateStats();
+        } catch (error) {
+          console.error('Error loading received requests:', error);
+          this.receivedRequests = [];
+          this.displayReceivedRequests();
+        }
+      }
+
+      async loadStats() {
+        try {
+          const data = await this.safeFetch('/api/players/stats');
+          this.stats = data;
+          this.updateStatsDisplay();
+        } catch (error) {
+          console.error('Error loading stats:', error);
+          this.updateStats();
+        }
+      }
+
+      displayGoldenSlots() {
+        const container = document.getElementById('goldenSlotsContainer');
+        
+        if (this.goldenSlots.length === 0) {
+          container.innerHTML = `
+            <div class="col-12">
+              <div class="empty-state">
+                <i class="bi bi-clock-history"></i>
+                <h5>لا توجد ساعات ذهبية حالياً</h5>
+                <p>يمكنك التحقق لاحقاً أو طلب لاعبين لحجزك الحالي</p>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = this.goldenSlots.map(slot => `
+          <div class="col-lg-6 mb-4">
+            <div class="golden-slot-card">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h5 class="mb-2">${slot.stadium_name}</h5>
+                  <p class="mb-2 text-muted">
+                    <i class="bi bi-geo-alt me-1"></i>${slot.location || 'غير محدد'}
+                    <span class="location-badge ms-2">${this.getAreaName(slot.area)}</span>
+                  </p>
+                  <p class="mb-2">
+                    <i class="bi bi-calendar me-1"></i>${this.formatDate(slot.date)}
+                    <i class="bi bi-clock ms-2 me-1"></i>${slot.start_time} - ${slot.end_time}
+                  </p>
+                  <p class="mb-2">
+                    <span class="players-needed-badge">
+                      <i class="bi bi-people me-1"></i>بحاجة لـ ${slot.players_needed} لاعبين
+                    </span>
+                  </p>
+                  <p class="mb-0 text-muted small">
+                    <i class="bi bi-person me-1"></i>منظم المباراة: ${slot.booker_name}
+                  </p>
+                </div>
+                <div class="col-md-4 text-left">
+                  <div class="d-flex flex-column gap-2">
+                    <button class="btn join-btn" onclick="playersSystem.showJoinRequestModal('${slot.id}')">
+                      <i class="bi bi-person-plus me-1"></i>انضم للمباراة
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="playersSystem.showSlotDetails('${slot.id}')">
+                      <i class="bi bi-info-circle me-1"></i>تفاصيل
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      displayMyRequests() {
+        const container = document.getElementById('myRequestsContainer');
+        
+        if (this.myRequests.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="bi bi-send"></i>
+              <h5>لم تقم بإرسال أي طلبات بعد</h5>
+              <p>انضم إلى إحدى الساعات الذهبية لبدء اللعب مع الآخرين</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = this.myRequests.map(request => `
+          <div class="request-card ${request.status}">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h6 class="mb-2">${request.stadium_name}</h6>
+                <p class="mb-2 text-muted">
+                  <i class="bi bi-calendar me-1"></i>${request.date}
+                  <i class="bi bi-clock ms-2 me-1"></i>${request.time}
+                </p>
+                <p class="mb-2">
+                  <span class="badge ${this.getRequestStatusClass(request.status)}">
+                    ${this.getRequestStatusText(request.status)}
+                  </span>
+                  <span class="badge bg-secondary ms-1">${request.players_count} لاعب</span>
+                </p>
+                <p class="mb-0 text-muted small">
+                  <i class="bi bi-clock me-1"></i>${new Date(request.created_at).toLocaleDateString('ar-EG')}
+                </p>
+              </div>
+              <div class="col-md-4 text-left">
+                ${request.status === 'pending' ? `
+                  <button class="btn btn-outline-danger btn-sm" onclick="playersSystem.cancelRequest('${request.id}')">
+                    <i class="bi bi-x-circle me-1"></i>إلغاء الطلب
+                  </button>
+                ` : `
+                  <button class="btn btn-outline-primary btn-sm" onclick="playersSystem.viewRequestDetails('${request.id}')">
+                    <i class="bi bi-eye me-1"></i>عرض التفاصيل
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      displayReceivedRequests() {
+        const container = document.getElementById('receivedRequestsContainer');
+        
+        if (this.receivedRequests.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="bi bi-inbox"></i>
+              <h5>لا توجد طلبات مستلمة</h5>
+              <p>عندما تطلب لاعبين لحجزك، ستظهر الطلبات هنا</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = this.receivedRequests.map(request => `
+          <div class="request-card ${request.status}">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h6 class="mb-2">${request.requester_name} (${request.requester_age} سنة)</h6>
+                <p class="mb-2 text-muted">
+                  <i class="bi bi-people me-1"></i>${request.players_count} لاعب
+                  <i class="bi bi-star ms-2 me-1"></i>${this.getSkillLevelText(request.skill_level)}
+                </p>
+                <p class="mb-2">${request.comment || 'لا توجد ملاحظات'}</p>
+                <p class="mb-2">
+                  <span class="badge ${this.getRequestStatusClass(request.status)}">
+                    ${this.getRequestStatusText(request.status)}
+                  </span>
+                </p>
+                <p class="mb-0 text-muted small">
+                  <i class="bi bi-clock me-1"></i>${new Date(request.created_at).toLocaleDateString('ar-EG')}
+                </p>
+              </div>
+              <div class="col-md-4 text-left">
+                ${request.status === 'pending' ? `
+                  <div class="btn-group-vertical">
+                    <button class="btn btn-success btn-sm mb-1" onclick="playersSystem.respondToRequest('${request.id}', 'accept')">
+                      <i class="bi bi-check me-1"></i>قبول
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="playersSystem.respondToRequest('${request.id}', 'reject')">
+                      <i class="bi bi-x me-1"></i>رفض
+                    </button>
+                  </div>
+                ` : `
+                  <button class="btn btn-outline-primary btn-sm" onclick="playersSystem.viewRequestDetails('${request.id}')">
+                    <i class="bi bi-eye me-1"></i>عرض
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      showJoinRequestModal(timeSlotId) {
+        const slot = this.goldenSlots.find(s => s.id === timeSlotId);
+        if (!slot) return;
+
+        document.getElementById('selectedTimeSlotId').value = timeSlotId;
+        document.getElementById('slotDetails').innerHTML = `
+          <div class="alert alert-info">
+            <h6>تفاصيل الساعة الذهبية:</h6>
+            <p class="mb-1"><strong>الملعب:</strong> ${slot.stadium_name}</p>
+            <p class="mb-1"><strong>التاريخ:</strong> ${this.formatDate(slot.date)}</p>
+            <p class="mb-1"><strong>الوقت:</strong> ${slot.start_time} - ${slot.end_time}</p>
+            <p class="mb-0"><strong>اللاعبين المطلوبين:</strong> ${slot.players_needed}</p>
+          </div>
+        `;
+
+        // تعبئة البيانات من الملف الشخصي
+        this.prefillUserData();
+
+        const modal = new bootstrap.Modal(document.getElementById('joinRequestModal'));
+        modal.show();
+      }
+
+      showSlotDetails(timeSlotId) {
+        const slot = this.goldenSlots.find(s => s.id === timeSlotId);
+        if (!slot) return;
+
+        const modalContent = document.getElementById('slotDetailsContent');
+        modalContent.innerHTML = `
+          <div class="row">
+            <div class="col-md-6">
+              <h6>معلومات الساعة</h6>
+              <p><strong>الملعب:</strong> ${slot.stadium_name}</p>
+              <p><strong>الموقع:</strong> ${slot.location || 'غير محدد'}</p>
+              <p><strong>التاريخ:</strong> ${this.formatDate(slot.date)}</p>
+              <p><strong>الوقت:</strong> ${slot.start_time} - ${slot.end_time}</p>
+              <p><strong>السعر:</strong> ${slot.price} ج.م</p>
+            </div>
+            <div class="col-md-6">
+              <h6>معلومات المنظم</h6>
+              <p><strong>الاسم:</strong> ${slot.booker_name}</p>
+              <p><strong>اللاعبين المطلوبين:</strong> ${slot.players_needed}</p>
+              <p><strong>نوع الملعب:</strong> ${slot.type === 'natural' ? 'نجيلة طبيعية' : 'نجيلة صناعية'}</p>
+              <p><strong>المميزات:</strong> ${slot.features ? slot.features.join('، ') : 'غير متوفر'}</p>
+            </div>
+          </div>
+          <div class="mt-3 text-center">
+            <button class="btn join-btn btn-lg" onclick="playersSystem.showJoinRequestModal('${slot.id}')">
+              <i class="bi bi-person-plus me-2"></i>انضم لهذه المباراة
+            </button>
+          </div>
+        `;
+
+        const modal = new bootstrap.Modal(document.getElementById('slotDetailsModal'));
+        modal.show();
+      }
+
+      async submitJoinRequest(formData) {
+        const submitBtn = document.getElementById('submitRequestBtn');
+        const originalText = submitBtn.innerHTML;
+        
+        try {
+          // التحقق من البيانات
+          if (!this.validateJoinRequest(formData)) {
+            return;
+          }
+
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="loading-spinner"></span> جاري الإرسال...';
+
+          const response = await this.safeFetch('/api/player-requests', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+          });
+
+          this.showToast('✅ تم إرسال طلب الانضمام بنجاح', 'success');
+          bootstrap.Modal.getInstance(document.getElementById('joinRequestModal')).hide();
+          await this.loadAllData();
+          
+        } catch (error) {
+          console.error('Error submitting join request:', error);
+          this.showToast('❌ حدث خطأ أثناء إرسال الطلب', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }
+      }
+
+      validateJoinRequest(formData) {
+        if (!formData.requesterName || formData.requesterName.trim().length < 2) {
+          this.showToast('الرجاء إدخال اسم صحيح', 'error');
+          return false;
+        }
+
+        if (!formData.requesterAge || formData.requesterAge < 15 || formData.requesterAge > 60) {
+          this.showToast('الرجاء إدخال عمر بين 15 و 60 سنة', 'error');
+          return false;
+        }
+
+        if (!formData.playersCount || formData.playersCount < 1 || formData.playersCount > 10) {
+          this.showToast('الرجاء إدخال عدد لاعبين بين 1 و 10', 'error');
+          return false;
+        }
+
+        return true;
+      }
+
+      async cancelRequest(requestId) {
+        if (!confirm('هل أنت متأكد من إلغاء هذا الطلب؟')) return;
+
+        try {
+          await this.safeFetch(`/api/player-requests/${requestId}/cancel`, {
+            method: 'DELETE'
+          });
+
+          this.showToast('✅ تم إلغاء الطلب بنجاح', 'success');
+          await this.loadAllData();
+        } catch (error) {
+          console.error('Error cancelling request:', error);
+          this.showToast('❌ حدث خطأ أثناء إلغاء الطلب', 'error');
+        }
+      }
+
+      async respondToRequest(requestId, action) {
+        try {
+          await this.safeFetch(`/api/player-requests/${requestId}/respond`, {
+            method: 'POST',
+            body: JSON.stringify({ action })
+          });
+
+          const actionText = action === 'accept' ? 'قبول' : 'رفض';
+          this.showToast(`✅ تم ${actionText} الطلب بنجاح`, 'success');
+          await this.loadAllData();
+        } catch (error) {
+          console.error('Error responding to request:', error);
+          this.showToast('❌ حدث خطأ أثناء معالجة الطلب', 'error');
+        }
+      }
+
+      viewRequestDetails(requestId) {
+        // يمكن تطوير هذه الدالة لعرض تفاصيل إضافية عن الطلب
+        this.showToast('عرض تفاصيل الطلب - قيد التطوير', 'warning');
+      }
+
+      prefillUserData() {
+        if (this.userProfile) {
+          if (this.userProfile.nickname) {
+            document.getElementById('requesterName').value = this.userProfile.nickname;
+          }
+          if (this.userProfile.age) {
+            document.getElementById('requesterAge').value = this.userProfile.age;
+          }
+        }
+      }
+
+      updateStats() {
+        this.stats.totalGoldenSlots = this.goldenSlots.length;
+        this.stats.totalRequests = this.myRequests.length;
+        this.stats.acceptedRequests = this.myRequests.filter(req => req.status === 'accepted').length;
+        this.stats.activePlayers = this.stats.totalRequests + this.stats.acceptedRequests;
+        this.updateStatsDisplay();
+      }
+
+      updateStatsDisplay() {
+        document.getElementById('totalGoldenSlots').textContent = this.stats.totalGoldenSlots;
+        document.getElementById('totalRequests').textContent = this.stats.totalRequests;
+        document.getElementById('acceptedRequests').textContent = this.stats.acceptedRequests;
+        document.getElementById('activePlayers').textContent = this.stats.activePlayers;
+      }
+
+      // دوال الفلترة
+      filterSlots(filter) {
+        // سيتم تطويرها لاحقاً
+        this.showToast(`تم تطبيق فلتر: ${filter}`, 'warning');
+        
+        // تحديث أزرار الفلترة
+        document.querySelectorAll('#golden-slots .btn-group .btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      filterMyRequests(filter) {
+        const requests = document.querySelectorAll('#myRequestsContainer .request-card');
+        requests.forEach(request => {
+          const status = request.classList.contains('pending') ? 'pending' : 
+                        request.classList.contains('accepted') ? 'accepted' : 'rejected';
+          let show = true;
+          
+          if (filter !== 'all' && status !== filter) {
+            show = false;
+          }
+          
+          request.style.display = show ? 'block' : 'none';
+        });
+
+        // تحديث أزرار الفلترة
+        document.querySelectorAll('#my-requests .btn-group .btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      filterReceivedRequests(filter) {
+        const requests = document.querySelectorAll('#receivedRequestsContainer .request-card');
+        requests.forEach(request => {
+          const status = request.classList.contains('pending') ? 'pending' : 
+                        request.classList.contains('accepted') ? 'accepted' : 'rejected';
+          let show = true;
+          
+          if (filter !== 'all' && status !== filter) {
+            show = false;
+          }
+          
+          request.style.display = show ? 'block' : 'none';
+        });
+
+        // تحديث أزرار الفلترة
+        document.querySelectorAll('#received-requests .btn-group .btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      showToast(message, type = 'info') {
+        const toastContainer = document.querySelector('.toast-container');
+        const toastId = 'toast-' + Date.now();
+        
+        const toast = document.createElement('div');
+        toast.className = `toast custom-toast toast-${type} show`;
+        toast.setAttribute('role', 'alert');
+        toast.innerHTML = `
+          <div class="toast-header text-white border-0">
+            <i class="bi ${this.getToastIcon(type)} me-2"></i>
+            <strong class="me-auto">${this.getToastTitle(type)}</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+          </div>
+          <div class="toast-body text-white">
+            ${message}
+          </div>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // إزالة التوست بعد 5 ثواني
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 5000);
+      }
+
+      showLoading(show) {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.style.display = show ? 'flex' : 'none';
+      }
+
+      getToastIcon(type) {
+        const icons = {
+          'success': 'bi-check-circle',
+          'error': 'bi-exclamation-circle',
+          'warning': 'bi-exclamation-triangle',
+          'info': 'bi-info-circle'
+        };
+        return icons[type] || 'bi-info-circle';
+      }
+
+      getToastTitle(type) {
+        const titles = {
+          'success': 'نجاح',
+          'error': 'خطأ',
+          'warning': 'تحذير',
+          'info': 'معلومة'
+        };
+        return titles[type] || 'معلومة';
+      }
+
+      startAutoRefresh() {
+        this.intervalId = setInterval(() => {
+          this.loadGoldenSlots();
+        }, 30000);
+      }
+
+      stopAutoRefresh() {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+      }
+
+      setupEventListeners() {
+        // نموذج طلب الانضمام
+        document.getElementById('joinRequestForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const formData = {
+            timeSlotId: parseInt(document.getElementById('selectedTimeSlotId').value),
+            requesterName: document.getElementById('requesterName').value.trim(),
+            requesterAge: parseInt(document.getElementById('requesterAge').value),
+            playersCount: parseInt(document.getElementById('playersCount').value),
+            skillLevel: document.getElementById('skillLevel').value,
+            comment: document.getElementById('requestComment').value.trim()
+          };
+
+          await this.submitJoinRequest(formData);
+        });
+
+        // إلغاء التحديث التلقائي عند مغادرة الصفحة
+        window.addEventListener('beforeunload', () => {
+          this.stopAutoRefresh();
+        });
+
+        // تحديث الإحصائيات تلقائياً
+        setInterval(() => {
+          this.updateStats();
+        }, 10000);
+      }
+
+      // دوال مساعدة
+      getAreaName(area) {
+        const areas = {
+          'mokatam': 'المقطم',
+          'hedaba': 'الهضبة الوسطي',
+          '70feddan': 'السبعين فدان'
+        };
+        return areas[area] || area;
+      }
+
+      formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          return date.toLocaleDateString('ar-EG', options);
+        } catch {
+          return dateString;
+        }
+      }
+
+      getRequestStatusClass(status) {
+        const classes = {
+          'pending': 'bg-warning',
+          'accepted': 'bg-success',
+          'rejected': 'bg-danger'
+        };
+        return classes[status] || 'bg-secondary';
+      }
+
+      getRequestStatusText(status) {
+        const texts = {
+          'pending': 'قيد الانتظار',
+          'accepted': 'مقبول',
+          'rejected': 'مرفوض'
+        };
+        return texts[status] || status;
+      }
+
+      getSkillLevelText(level) {
+        const levels = {
+          'beginner': 'مبتدئ',
+          'intermediate': 'متوسط',
+          'advanced': 'متقدم',
+          'expert': 'محترف'
+        };
+        return levels[level] || level;
+      }
+    }
+
+    // نظام الملف الشخصي المتقدم
+    class AdvancedProfileSystem {
+      constructor() {
+        this.setupRatingStars();
+      }
+
+      // ===================================
+      // 1. إدارة الحجوزات والعرض
+      // ===================================
+      async loadUserBookings() {
+        const listContainer = document.getElementById('userBookingsList');
+        if (!listContainer) return;
+        listContainer.innerHTML = '<p class="text-center text-info mt-5">جاري جلب حجوزاتك...</p>';
+
+        try {
+          window.showLoading(true);
+          const bookings = await apiRequest('/api/player/bookings', 'GET'); 
+          window.showLoading(false);
+
+          if (bookings.length === 0) {
+            listContainer.innerHTML = '<p class="text-center text-muted mt-5"><i class="bi bi-info-circle"></i> لا توجد حجوزات مسجلة حالياً.</p>';
+            return;
+          }
+
+          listContainer.innerHTML = bookings.map(b => this.createBookingCard(b)).join('');
+
+        } catch (error) {
+          window.showLoading(false);
+          window.showToast('فشل تحميل الحجوزات: ' + error.message, 'error');
+          listContainer.innerHTML = '<p class="text-center text-danger mt-5">❌ حدث خطأ أثناء تحميل الحجوزات.</p>';
+        }
+      }
+      
+      createBookingCard(booking) {
+        let statusClass = 'bg-secondary';
+        let actionButton = '';
+
+        if (booking.status === 'booked_confirmed') {
+          statusClass = 'bg-success';
+          actionButton += `
+              <button class="btn btn-sm btn-outline-success mt-2" 
+                      onclick="profileSystem.showCreateRequestModal('${booking.booking_id}', '${booking.field_name}')">
+                  <i class="bi bi-person-plus"></i> طلب لاعبين
+              </button>`;
+        } else if (booking.status === 'played') {
+          statusClass = 'bg-primary';
+          if (!booking.has_rated) { 
+            actionButton += `
+                <button class="btn btn-sm btn-warning mt-2" 
+                        onclick="profileSystem.showRatingModal('${booking.booking_id}', '${booking.field_name}')">
+                    <i class="bi bi-star"></i> قيم الملعب
+                </button>`;
+          } else {
+            actionButton += `<span class="badge bg-secondary mt-2"><i class="bi bi-check-circle"></i> تم التقييم</span>`;
+          }
+        }
+        
+        return `
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">${booking.field_name}</h5>
+                        <p class="card-text mb-1"><i class="bi bi-calendar-event"></i> التاريخ: <strong>${booking.booking_date}</strong></p>
+                        <p class="card-text mb-1"><i class="bi bi-clock"></i> التوقيت: <strong>${booking.start_time} - ${booking.end_time}</strong></p>
+                        <hr>
+                        <p class="card-text mb-1">المبلغ المتبقي: <strong>${booking.remaining_amount} ر.س</strong></p>
+                        <p class="card-text mb-3">الحالة: <span class="badge ${statusClass}">${this.formatStatus(booking.status)}</span></p>
+                        ${actionButton}
+                    </div>
+                </div>
+            </div>
+        `;
+      }
+
+      formatStatus(status) {
+        const statuses = {
+          'booked_confirmed': 'مؤكد',
+          'booked_unconfirmed': 'بانتظار التأكيد',
+          'played': 'مكتمل (مُلعب)',
+          'cancelled': 'ملغى',
+          'missed': 'فائت',
+        };
+        return statuses[status] || status;
+      }
+
+      // ===================================
+      // 2. دوال التقييمات
+      // ===================================
+      setupRatingStars() {
+        const starRating = document.getElementById('starRating');
+        if (!starRating) return;
+
+        starRating.innerHTML = '';
+        for (let i = 1; i <= 5; i++) {
+          const star = document.createElement('i');
+          star.className = 'bi bi-star me-1 fs-4 text-warning';
+          star.setAttribute('data-value', i);
+          star.style.cursor = 'pointer';
+          star.onclick = () => this.setRating(i);
+          starRating.appendChild(star);
+        }
+      }
+      
+      setRating(value) {
+        const starRating = document.getElementById('starRating');
+        if (!starRating) return;
+
+        starRating.setAttribute('data-rating', value);
+        starRating.querySelectorAll('i').forEach(star => {
+          const starValue = parseInt(star.getAttribute('data-value'));
+          star.className = starValue <= value ? 'bi bi-star-fill me-1 fs-4 text-warning' : 'bi bi-star me-1 fs-4 text-warning';
+        });
+      }
+
+      showRatingModal(bookingId, fieldName) {
+        const modal = new bootstrap.Modal(document.getElementById('ratingModal'));
+        document.getElementById('ratingBookingId').value = bookingId;
+        document.getElementById('ratingField').textContent = fieldName;
+        document.getElementById('ratingComment').value = '';
+        this.setRating(0);
+        modal.show();
+      }
+      
+      async submitRating() {
+        const bookingId = document.getElementById('ratingBookingId').value;
+        const ratingValue = parseInt(document.getElementById('starRating').getAttribute('data-rating'));
+        const comment = document.getElementById('ratingComment').value.trim();
+
+        if (ratingValue === 0) {
+          window.showToast('يرجى اختيار عدد النجوم للتقييم.', 'warning');
+          return;
+        }
+
+        try {
+          window.showLoading(true);
+          
+          await apiRequest(`/api/bookings/${bookingId}/rate`, 'POST', { 
+            ratingValue, 
+            comment 
+          });
+          
+          window.showLoading(false);
+          window.showToast('✅ تم إرسال تقييمك بنجاح!', 'success');
+          
+          const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
+          modal.hide();
+          
+          this.loadUserBookings();
+
+        } catch (error) {
+          window.showLoading(false);
+          window.showToast('❌ فشل إرسال التقييم: ' + error.message, 'error');
+        }
+      }
+
+      // ===================================
+      // 3. دوال طلبات اللاعبين
+      // ===================================
+
+      showCreateRequestModal(bookingId, fieldName) {
+        const modal = new bootstrap.Modal(document.getElementById('playerRequestModal'));
+        document.getElementById('requestBookingId').value = bookingId;
+        document.getElementById('requestField').textContent = fieldName;
+        document.getElementById('playersNeeded').value = '';
+        document.getElementById('requestNotes').value = '';
+        modal.show();
+      }
+
+      async createPlayerRequest() {
+        const bookingId = document.getElementById('requestBookingId').value;
+        const playersNeeded = parseInt(document.getElementById('playersNeeded').value);
+        const notes = document.getElementById('requestNotes').value.trim();
+
+        if (isNaN(playersNeeded) || playersNeeded <= 0) {
+          window.showToast('يرجى تحديد عدد صحيح للاعبين المطلوبين (1 أو أكثر).', 'warning');
+          return;
+        }
+
+        try {
+          window.showLoading(true);
+          
+          await apiRequest(`/api/player-requests`, 'POST', {
+            bookingId,
+            playersNeeded,
+            notes
+          });
+          
+          window.showLoading(false);
+          window.showToast('✅ تم نشر طلب اللاعبين بنجاح! يمكنهم الانضمام الآن.', 'success');
+
+          const modal = bootstrap.Modal.getInstance(document.getElementById('playerRequestModal'));
+          modal.hide();
+          
+        } catch (error) {
+          window.showLoading(false);
+          window.showToast('❌ فشل نشر طلب اللاعبين: ' + error.message, 'error');
+        }
+      }
+    }
+
+    // دوال مساعدة افتراضية
+    async function apiRequest(url, method, data) {
+      const options = {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      };
+      
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+      
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    }
+
+    function showToast(message, type) {
+      const toastContainer = document.querySelector('.toast-container');
+      const toastId = 'toast-' + Date.now();
+      
+      const toast = document.createElement('div');
+      toast.className = `toast custom-toast toast-${type} show`;
+      toast.setAttribute('role', 'alert');
+      toast.innerHTML = `
+        <div class="toast-header text-white border-0">
+          <i class="bi ${type === 'success' ? 'bi-check-circle' : type === 'error' ? 'bi-exclamation-circle' : type === 'warning' ? 'bi-exclamation-triangle' : 'bi-info-circle'} me-2"></i>
+          <strong class="me-auto">${type === 'success' ? 'نجاح' : type === 'error' ? 'خطأ' : type === 'warning' ? 'تحذير' : 'معلومة'}</strong>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body text-white">
+          ${message}
+        </div>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 5000);
+    }
+
+    function showLoading(show) {
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.style.display = show ? 'flex' : 'none';
+    }
+
+    // تسجيل الخروج
+    async function logout() {
+      try {
+        await fetch('/logout', { method: 'POST' });
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userProfile');
+        window.location.href = '/login.html';
+      } catch (error) {
+        window.location.href = '/login.html';
+      }
+    }
+
+    // تهيئة النظام
+    let playersSystem;
+    let profileSystem;
+    document.addEventListener('DOMContentLoaded', function() {
+      playersSystem = new PlayersSystem();
+      playersSystem.init();
+      profileSystem = new AdvancedProfileSystem();
+    });
+  </script>
+</body>
+</html>
