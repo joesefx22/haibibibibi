@@ -3,181 +3,514 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ehgzly — الصفحة الرئيسية الموحدة</title>
+  <title>احجزلي - حجز ملاعب كرة القدم</title>
   
-  <meta name="description" content="ملعبك في ضغطة، وحجزك مؤكد عندنا - احجز ملاعب كرة القدم بسهولة مع Ehgzly. دفع عربون، طلب لاعبين إضافيين، أكواد دفع">
+  <!-- SEO & Security -->
+  <meta name="description" content="ملعبك في ضغطة، وحجزك مؤكد عندنا - احجز ملاعب كرة القدم بسهولة مع احجزلي">
   <meta name="theme-color" content="#1a7f46">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com https://placehold.co; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';">
-  <link rel="icon" href="./images/favicon.png">
   
+  <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="index.css">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div id="loadingOverlay">
-    <div class="multi-circle-spinner">
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-    </div>
+<!-- شاشة التحميل -->
+<div id="loadingOverlay">
+  <div class="multi-circle-spinner">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
     <div class="loading-text">جاري التحميل...</div>
   </div>
+</div>
 
-  <button id="themeToggle" class="theme-toggle" title="الوضع الليلي">
-      <i class="bi bi-moon"></i>
-  </button>
-  
-  <nav class="navbar navbar-expand-lg sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#home">
-        Ehgzly
-      </a>
-      
-      <div class="d-none d-lg-flex flex-grow-1 mx-4 search-bar-unified">
-          <input id="searchInput" type="text" class="form-control me-2" placeholder="ابحث عن ملعب أو منطقة..." aria-label="Search">
-          <select id="filterArea" class="form-select me-2"><option value="">كل المناطق</option></select>
-          <select id="filterType" class="form-select me-2"><option value="">كل الأنواع</option></select>
-          <input id="datePicker" type="date" class="form-control">
-      </div>
-      
-      <div>
-        <button class="btn btn-primary" id="loginLogoutBtn">تسجيل / دخول</button>
-      </div>
-    </div>
-  </nav>
+<!-- زر العودة لأعلى -->
+<button id="toTop" title="العودة لأعلى">⬆</button>
 
-  <div id="bookingTracker" class="booking-tracker container" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center">
-      <span>متابعة حجز: <strong id="trackerStadiumName"></strong></span>
-      <span id="trackerStatusBadge" class="badge bg-warning"></span>
-    </div>
-    <div class="tracker-progress">
-      <div id="trackerProgressBar" class="tracker-progress-bar" style="width: 0%;"></div>
+<!-- زر الوضع الليلي -->
+<button class="theme-toggle" id="themeToggle" title="الوضع الليلي">
+  <i class="bi bi-moon"></i>
+</button>
+
+<!-- شريط متابعة الحجز -->
+<div class="booking-tracker" id="bookingTracker">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h5 class="mb-1" id="trackerTitle">متابعة حجزك</h5>
+        <p class="mb-1" id="trackerDetails">الملعب: -- | التاريخ: -- | الوقت: --</p>
+        <div class="tracker-progress">
+          <div class="tracker-progress-bar" id="trackerProgress" style="width: 0%"></div>
+        </div>
+        <small id="trackerStatus">جاري تجهيز الحجز...</small>
+      </div>
+      <div class="col-md-4 text-left">
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-light btn-sm" onclick="viewBookingDetails()">
+            <i class="bi bi-eye me-1"></i>عرض التفاصيل
+          </button>
+          <button class="btn btn-light btn-sm" onclick="cancelCurrentBooking()">
+            <i class="bi bi-x-circle me-1"></i>إلغاء الحجز
+          </button>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 
-  <main class="container-fluid">
+<!-- شريط التنقل -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <img src="./images/logo.png" alt="احجزلي" class="logo-img">
+      احجزلي
+    </a>
     
-    <section id="banners" class="banners-section"></section>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     
-    <div class="container py-3">
-      <div id="filtersSummary" class="text-muted small"></div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" href="#home">الرئيسية</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#areas">المناطق</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#stadiums">الملاعب</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#features">المميزات</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/players-with-you">
+            <i class="bi bi-people me-1"></i>لاعبوني معاكم
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">
+            <i class="bi bi-person me-1"></i>ملفي
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">
+            <i class="bi bi-box-arrow-in-left me-1"></i>تسجيل الدخول
+          </a>
+        </li>
+      </ul>
     </div>
-    
-    <section id="featuredStadiumsSection" class="featured-stadiums">
-      <div class="container">
-        <h2 class="section-title text-center mb-5">🏟️ الملاعب المميزة</h2>
-        <div id="featuredStadiumsContainer" class="row">
-          </div>
-      </div>
-    </section>
+  </div>
+</nav>
 
-    <section id="stadiumsSection" class="container py-5">
-      <h2 class="section-title mb-4">نتائج البحث و الملاعب المتاحة</h2>
-      <div id="stadiumsContainer" class="row">
-        <div class="col-lg-4 col-md-6 mb-4"><div class="skeleton-card"></div></div>
-        <div class="col-lg-4 col-md-6 mb-4"><div class="skeleton-card"></div></div>
-        <div class="col-lg-4 col-md-6 mb-4"><div class="skeleton-card"></div></div>
-      </div>
-    </section>
-    
-    <section id="how-it-works" class="how-it-works">
-      <div class="container">
-        <h2 class="section-title text-center mb-5">كيف يعمل نظام الحجز؟</h2>
-        <div class="row">
-          <div class="col-md-4 step-card">
-            <div class="step-number">1</div>
-            <h4>ابحث عن ملعبك</h4>
-            <p>اختر المنطقة والتاريخ ونوع الملعب الذي يناسبك.</p>
-          </div>
-          <div class="col-md-4 step-card">
-            <div class="step-number">2</div>
-            <h4>احجز وادفع العربون</h4>
-            <p>اختر الساعة المناسبة وادفع عربونك لتأكيد الحجز فوراً.</p>
-          </div>
-          <div class="col-md-4 step-card">
-            <div class="step-number">3</div>
-            <h4>استمتع باللعب</h4>
-            <p>ستصلك رسالة تأكيد الحجز، توجه للملعب واستمتع بمباراتك.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <section class="features-bar">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 feature-item">
-          <i class="bi bi-shield-lock feature-icon"></i>
-          <p class="feature-text">حماية الدفع</p>
-        </div>
-        <div class="col-md-3 feature-item">
-          <i class="bi bi-lightning-charge feature-icon"></i>
-          <p class="feature-text">تأكيد فوري</p>
-        </div>
-        <div class="col-md-3 feature-item">
-          <i class="bi bi-people feature-icon"></i>
-          <p class="feature-text">طلب لاعبين</p>
-        </div>
-        <div class="col-md-3 feature-item">
-          <i class="bi bi-headset feature-icon"></i>
-          <p class="feature-text">دعم 24/7</p>
-        </div>
+<!-- Hero Section -->
+<section class="hero-section" id="home">
+  <div class="container">
+    <div class="hero-content fade-in">
+      <h1 class="hero-title text-light">ملعبك في ضغطة، وحجزك مؤكد عندنا</h1>
+      <p class="hero-subtitle text-light">مع احجزلي هتجرب أسهل وأسرع طريقة لحجز الملاعب وإدارة الحجوزات احجز، نظّم، وابدأ اللعبة!</p>
+      <div class="hero-buttons">
+        <a href="#stadiums" class="btn btn-primary btn-lg">
+          <i class="bi bi-search me-2"></i>احجز الآن
+        </a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5 class="brand">Ehgzly</h5>
-          <p class="small">شبكتك الأولى لحجز ملاعب كرة القدم في مصر.</p>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5>روابط سريعة</h5>
-          <div class="footer-links">
-            <a href="#featuredStadiumsSection">الملاعب المميزة</a>
-            <a href="#">سياسة الخصوصية</a>
-            <a href="#">شروط الخدمة</a>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5>الدعم والمساعدة</h5>
-          <div class="footer-links">
-            <a href="#">الأسئلة الشائعة</a>
-            <a href="#">تواصل معنا</a>
-            <a href="#">دليل الملاعب</a>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5>تابعنا</h5>
-          <div class="social-links">
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-          </div>
+<!-- قسم البانرز -->
+<section class="banners-section" id="banners">
+  <div class="container">
+    <h2 class="section-title text-white">العروض والتخفيضات</h2>
+    <div class="row" id="bannersContainer">
+      <!-- سيتم تعبئة البانرز ديناميكياً -->
+    </div>
+  </div>
+</section>
+
+<!-- مناطق الحجز -->
+<section class="areas-section" id="areas">
+  <div class="container">
+    <h2 class="section-title">المناطق المتاحة للحجز</h2>
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="area-card">
+          <div class="area-image" style="background-image: url('./images/mokatam-area.jpg')"></div>
+          <div class="area-title">المقطم</div>
         </div>
       </div>
-      <hr class="border-secondary">
-      <div class="text-center small py-2">
-        &copy; 2025 Ehgzly. جميع الحقوق محفوظة.
+      <div class="col-md-6 mb-4">
+        <div class="area-card">
+          <div class="area-image" style="background-image: url('./images/hedaba-area.jpg')"></div>
+          <div class="area-title">الهضبة الوسطي</div>
+        </div>
       </div>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <button id="toTop" class="btn btn-primary rounded-circle" style="display: none; position: fixed; right: 30px; bottom: 30px; z-index: 900;"><i class="bi bi-arrow-up"></i></button>
+<!-- كيف يعمل -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <h2 class="section-title">كيف يعمل</h2>
+    <div class="row">
+      <div class="col-md-3 mb-4">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h4>اختر ملعب</h4>
+          <p>اختر من بين أفضل الملاعب في منطقتك</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h4>حدد الوقت</h4>
+          <p>اختر التاريخ والوقت المناسب لك</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h4>أكد الحجز</h4>
+          <p>ادفع العربون وأكّد حجزك</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h4>استمتع بالمباراة</h4>
+          <p>احضر في الموعد واستمتع باللعب</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script src="index.js" defer></script>
+<!-- الملاعب المميزة -->
+<section class="featured-stadiums" id="featured-stadiums">
+  <div class="container">
+    <h2 class="section-title">🏆 الملاعب المميزة</h2>
+    <div class="row" id="featuredStadiumsContainer">
+      <!-- سيتم تعبئة الملاعب المميزة ديناميكياً -->
+    </div>
+  </div>
+</section>
+
+<!-- الملاعب المتاحة -->
+<section class="py-5" id="stadiums">
+  <div class="container">
+    <h2 class="section-title">الملاعب المتاحة</h2>
+    
+    <!-- شريط البحث والفلترة -->
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <div class="search-box">
+          <input type="text" class="form-control" id="searchStadiums" placeholder="🔍 ابحث عن ملاعب بالاسم أو المنطقة...">
+          <i class="bi bi-search search-icon"></i>
+        </div>
+      </div>
+      <div class="col-md-2 mb-3">
+        <select class="form-select" id="priceFilter">
+          <option value="">جميع الأسعار</option>
+          <option value="0-150">حتى 150 ج.م</option>
+          <option value="150-250">150 - 250 ج.م</option>
+          <option value="250-999">أكثر من 250 ج.م</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-3">
+        <select class="form-select" id="ratingFilter">
+          <option value="">جميع التقييمات</option>
+          <option value="4.5">⭐ 4.5+ ممتاز</option>
+          <option value="4.0">⭐ 4.0+ جيد جداً</option>
+          <option value="3.5">⭐ 3.5+ جيد</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-3">
+        <select class="form-select" id="availabilityFilter">
+          <option value="">جميع الحالات</option>
+          <option value="available">🟢 متاح الآن</option>
+          <option value="soon">🟡 متاح قريباً</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- فلترة متقدمة -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label class="form-label">المنطقة</label>
+        <select class="form-select" id="areaFilter">
+          <option value="">جميع المناطق</option>
+          <option value="mokatam">المقطم</option>
+          <option value="hedaba">الهضبة الوسطي</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">ترتيب حسب</label>
+        <select class="form-select" id="sortFilter">
+          <option value="default">الافتراضي</option>
+          <option value="price_low">السعر: من الأقل للأعلى</option>
+          <option value="price_high">السعر: من الأعلى للأقل</option>
+          <option value="rating">التقييم</option>
+          <option value="availability">الأكثر توفراً</option>
+          <option value="popular">الأكثر شهرة</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">نوع الملعب</label>
+        <select class="form-select" id="typeFilter">
+          <option value="">جميع الأنواع</option>
+          <option value="natural">نجيلة طبيعية</option>
+          <option value="artificial">نجيلة صناعية</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Container للملاعب -->
+    <div class="row" id="stadiumsContainer">
+      <!-- سيتم تعمئة الملاعب ديناميكياً -->
+    </div>
+  </div>
+</section>
+
+<!-- المميزات -->
+<section class="features-section" id="features">
+  <div class="container">
+    <h2 class="section-title">لماذا تختار احجزلي؟</h2>
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-lightning-charge"></i>
+          </div>
+          <h4>حجز فوري وآمن</h4>
+          <p>احجز وادفع عربونك ببضع نقرات. نظام دفع آمن ومشفّر</p>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <h4>ساعات ذهبية للاعبين</h4>
+          <p>اعلن عن حاجتك للاعبين بسهولة واجذب المشاركين</p>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-tags"></i>
+          </div>
+          <h4>نظام خصومات ودفع سهل</h4>
+          <p>ادعم عملائك بكود خصم أو أكواد دفع بقيم مختلفة</p>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-headset"></i>
+          </div>
+          <h4>دعم فني سريع</h4>
+          <p>فريقنا جاهز للمساعدة عند أي طارئ على مدار الساعة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- شريط المميزات السريعة -->
+<section class="features-bar">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-6">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="bi bi-lightning-charge"></i>
+          </div>
+          <div class="feature-text">حجز فوري</div>
+        </div>
+      </div>
+      <div class="col-md-4 col-6">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <div class="feature-text">دفع آمن</div>
+        </div>
+      </div>
+      <div class="col-md-4 col-6">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="feature-text">لاعبين إضافيين</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <h5>احجزلي</h5>
+        <p>أقوي منصة لحجز الملاعب نغطي مناطق المقطم، الهضبة الوسطي.</p>
+        <div class="social-links">
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-whatsapp"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h5>المناطق</h5>
+        <div class="footer-links">
+          <a href="#areas">المقطم</a>
+          <a href="#areas">الهضبة الوسطي</a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h5>طرق الدفع</h5>
+        <div class="footer-links">
+          <a href="#">فودافون كاش</a>
+          <a href="#">أورنج كاش</a>
+          <a href="#">اتصالات كاش</a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h5>اتصل بنا</h5>
+        <div class="footer-links">
+          <a href="tel:+201000000000"><i class="bi bi-phone me-2"></i>+20 100 000 0000</a>
+          <a href="#"><i class="bi bi-geo-alt me-2"></i>شرق القاهرة</a>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="text-center py-3">
+      <p class="mb-0">&copy; 2025 احجزلي. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- المودالات -->
+<!-- Date Modal -->
+<div class="modal fade date-modal" id="dateModal" tabindex="-1" role="dialog" aria-labelledby="dateModalLabel">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dateModalLabel">اختر تاريخ الحجز</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <div class="date-options" id="dateOptions"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">تأكيد التاريخ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="bookingModalLabel">تأكيد الحجز ودفع العربون</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <div id="bookingDetails" class="mb-3"></div>
+        <form id="bookingForm">
+          <input type="hidden" name="_csrf" id="csrfToken">
+          <input type="hidden" name="pitchId" id="pitchId">
+          <input type="hidden" name="selectedTime" id="selectedTime">
+          <input type="hidden" name="selectedDate" id="selectedDate">
+          
+          <div class="mb-3">
+            <label class="form-label">الاسم الكامل</label>
+            <input type="text" class="form-control" id="customerName" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">رقم الهاتف</label>
+            <input type="tel" class="form-control" id="customerPhone" name="phone" pattern="^01[0125][0-9]{8}$" required>
+          </div>
+          
+          <!-- قسم طلب اللاعبين الإضافيين -->
+          <div class="mb-3">
+            <label class="form-label">عدد اللاعبين الإضافيين المطلوبين</label>
+            <input type="number" class="form-control" id="playersNeeded" name="playersNeeded" min="0" max="10" value="0">
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">كود الخصم (اختياري)</label>
+            <input type="text" class="form-control" id="discountCode" name="discountCode" placeholder="أدخل الكود إذا كان لديك">
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-100" id="bookingSubmitBtn">
+            <i class="bi bi-credit-card me-2"></i>تأكيد الحجز ودفع العربون
+          </button>
+        </form>
+        <div id="bookingStatus" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rating Modal -->
+<div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-white">
+        <h5 class="modal-title" id="ratingModalLabel">تقييم الملعب</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <div id="ratingDetails" class="mb-3"></div>
+        <form id="ratingForm">
+          <input type="hidden" name="_csrf" id="ratingCsrfToken">
+          <input type="hidden" name="pitchId" id="ratingPitchId">
+          <input type="hidden" name="bookingId" id="ratingBookingId">
+          
+          <div class="mb-3">
+            <label class="form-label">تقييمك للملعب</label>
+            <div class="rating-stars" id="ratingStars">
+              <i class="bi bi-star star" data-rating="1"></i>
+              <i class="bi bi-star star" data-rating="2"></i>
+              <i class="bi bi-star star" data-rating="3"></i>
+              <i class="bi bi-star star" data-rating="4"></i>
+              <i class="bi bi-star star" data-rating="5"></i>
+            </div>
+            <input type="hidden" name="rating" id="selectedRating" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">تعليقك (اختياري)</label>
+            <textarea class="form-control" name="comment" id="ratingComment" rows="3"></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-warning w-100 text-white">
+            <i class="bi bi-star-fill me-2"></i>إرسال التقييم
+          </button>
+        </form>
+        <div id="ratingStatus" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
