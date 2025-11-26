@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دفع العربون - احجزلي</title>
+    
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a7f46 0%, #145c32 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .payment-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, #1a7f46, #145c32);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .payment-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .payment-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .user-info {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .payment-content {
+            padding: 30px;
+        }
+
+        .booking-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-right: 4px solid #1a7f46;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item.total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #1a7f46;
+            border-top: 2px solid #1a7f46;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .discount-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .discount-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .discount-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .discount-input input:focus {
+            border-color: #1a7f46;
+            outline: none;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #1a7f46;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #145c32;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .payment-methods {
+            margin-bottom: 30px;
+        }
+
+        .payment-methods h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-option {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .payment-option:hover {
+            border-color: #1a7f46;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .payment-option.selected {
+            border-color: #1a7f46;
+            background: #f8fff9;
+        }
+
+        .payment-option i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .payment-option .option-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .payment-option .option-description {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .paymob-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .paymob-logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .paymob-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .voucher-section {
+            background: #e8f5e8;
+            border: 2px dashed #1a7f46;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .voucher-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .voucher-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #1a7f46;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            background: white;
+        }
+
+        .code-validation {
+            background: #e7f3ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .validation-item.valid {
+            color: #1a7f46;
+        }
+
+        .validation-item.invalid {
+            color: #dc3545;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-pay {
+            flex: 1;
+            background: #1a7f46;
+            color: white;
+            font-size: 18px;
+            padding: 15px;
+        }
+
+        .btn-pay:hover {
+            background: #145c32;
+        }
+
+        .btn-pay:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1a7f46;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .payment-status {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .status-success {
+            color: #1a7f46;
+        }
+
+        .status-error {
+            color: #dc3545;
+        }
+
+        .secure-badge {
+            background: #1a7f46;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .free-booking {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .user-info-section {
+            background: #e7f3ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-right: 3px solid #1a7f46;
+        }
+
+        .user-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .user-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .user-info-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .user-info-value {
+            color: #1a7f46;
+        }
+
+        @media (max-width: 768px) {
+            .payment-container {
+                margin: 10px;
+            }
+            
+            .payment-content {
+                padding: 20px;
+            }
+            
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-actions {
+                flex-direction: column;
+            }
+            
+            .discount-input,
+            .voucher-input {
+                flex-direction: column;
+            }
+            
+            .user-info {
+                position: static;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            
+            .user-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <div class="user-info" id="userInfoBadge">
+                <i class="bi bi-person-circle me-1"></i>
+                <span id="usernameDisplay">جارٍ التحميل...</span>
+            </div>
+            <h1>🚀 ادفع العربون</h1>
+            <p>أكمل عملية الحجز بدفع العربون</p>
+        </div>
+
+        <div class="payment-content">
+            <!-- رسائل التنبيه -->
+            <div class="alert" id="alertMessage"></div>
+
+            <!-- معلومات المستخدم -->
+            <div class="user-info-section" id="userInfoSection">
+                <h5>👤 معلومات المستخدم</h5>
+                <div class="user-info-grid" id="userInfoGrid">
+                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                </div>
+            </div>
+
+            <!-- تفاصيل الحجز -->
+            <div class="booking-summary" id="bookingSummary">
+                <h3>📋 تفاصيل الحجز</h3>
+                <div class="summary-items" id="summaryItems">
+                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                </div>
+            </div>
+
+            <!-- قسم كود الخصم -->
+            <div class="discount-section">
+                <h3>🎫 كود الخصم (اختياري)</h3>
+                <div class="discount-input">
+                    <input type="text" id="discountCode" placeholder="أدخل كود الخصم" maxlength="20">
+                    <button class="btn btn-primary" onclick="validateDiscountCode()">تطبيق الكود</button>
+                </div>
+                <div id="discountMessage"></div>
+            </div>
+
+            <!-- حالة الحجز المجاني -->
+            <div class="free-booking" id="freeBookingSection" style="display: none;">
+                <h3>🎉 لا حاجة للدفع!</h3>
+                <p>بعد تطبيق الخصم، أصبح المبلغ المطلوب صفر.</p>
+                <button class="btn btn-success" onclick="confirmFreeBooking()">
+                    <i class="bi bi-check-circle me-2"></i>
+                    تأكيد الحجز مجاناً
+                </button>
+            </div>
+
+            <!-- طرق الدفع -->
+            <div class="payment-methods" id="paymentMethodsSection">
+                <h3>💳 اختر طريقة الدفع</h3>
+                <div class="payment-options">
+                    <div class="payment-option" onclick="selectPaymentMethod('online')" id="option-online">
+                        <i class="bi bi-credit-card"></i>
+                        <div class="option-name">الدفع اونلاين</div>
+                        <div class="option-description">آمن وسريع عبر Paymob</div>
+                    </div>
+                    <div class="payment-option" onclick="selectPaymentMethod('voucher')" id="option-voucher">
+                        <i class="bi bi-upc-scan"></i>
+                        <div class="option-name">الدفع بالكود</div>
+                        <div class="option-description">استخدام كود دفع</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم Paymob -->
+            <div class="paymob-section" id="paymobSection">
+                <div class="paymob-logo">
+                    <i class="bi bi-credit-card"></i>
+                </div>
+                <h3 style="margin-bottom: 10px;">Paymob</h3>
+                <p style="opacity: 0.9; margin-bottom: 20px;">الدفع الآمن عبر البطاقات الإئتمانية والمحافظ الإلكترونية</p>
+                
+                <div class="paymob-features">
+                    <div class="feature">
+                        <i class="bi bi-shield-check"></i>
+                        <span>آمن 100%</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-lightning"></i>
+                        <span>سريع</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-phone"></i>
+                        <span>جميع البطاقات</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-headset"></i>
+                        <span>دعم فني</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="background: white; color: #667eea; font-size: 18px; padding: 15px 30px;" onclick="initiatePaymobPayment()">
+                    <i class="bi bi-credit-card me-2"></i>
+                    الدفع عبر Paymob
+                </button>
+
+                <div class="secure-badge">
+                    <i class="bi bi-shield-check"></i>
+                    مشفر ومؤمن بالكامل
+                </div>
+            </div>
+
+            <!-- قسم الدفع بالكود -->
+            <div class="voucher-section" id="voucherSection">
+                <h3>💳 الدفع باستخدام الكود</h3>
+                <p style="color: #666; margin-bottom: 15px; font-size: 14px;">
+                    أدخل كود الدفع الخاص بالملعب. يجب أن تكون قيمة الكود مساوية أو أكبر من قيمة العربون.
+                </p>
+
+                <!-- إدخال الكود -->
+                <div class="voucher-input">
+                    <input type="text" id="voucherCode" placeholder="أدخل كود الدفع" maxlength="20">
+                    <button class="btn btn-success" onclick="validateVoucher()">تحقق من الكود</button>
+                </div>
+
+                <!-- تحقق من الكود -->
+                <div class="code-validation" id="codeValidation" style="display: none;">
+                    <h6>حالة التحقق:</h6>
+                    <div class="validation-item" id="codeValidationStatus">
+                        <i class="bi bi-dash-circle"></i>
+                        <span>الكود: في انتظار الإدخال</span>
+                    </div>
+                    <div class="validation-item" id="totalValidation">
+                        <i class="bi bi-dash-circle"></i>
+                        <span>المجموع المطلوب: <span id="requiredAmount">0</span> جنيه</span>
+                    </div>
+                </div>
+
+                <div id="voucherMessage"></div>
+            </div>
+
+            <!-- حالة الدفع -->
+            <div class="payment-status" id="paymentStatus">
+                <!-- سيتم تحديثها بالجافاسكريبت -->
+            </div>
+
+            <!-- زر التحميل -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>جاري معالجة الدفع...</p>
+            </div>
+
+            <!-- أزرار التنقل -->
+            <div class="payment-actions">
+                <a href="/" class="btn btn-secondary btn-back">
+                    <i class="bi bi-arrow-right me-2"></i>
+                    العودة للرئيسية
+                </a>
+                <button class="btn btn-pay" id="confirmPaymentBtn" onclick="confirmPayment()" disabled>
+                    <i class="bi bi-check-circle me-2"></i>
+                    تأكيد الدفع
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // المتغيرات العامة
+        let currentBooking = null;
+        let appliedDiscount = null;
+        let csrfToken = '';
+        let paymobOrderId = null;
+        let pollingInterval = null;
+        let selectedPaymentMethod = null;
+        let validatedVoucher = null;
+        let pollingAttempts = 0;
+        const MAX_POLLING_ATTEMPTS = 60; // 3 دقائق (60 * 3 ثواني)
+        
+        // بيانات المستخدم من localStorage
+        const userId = localStorage.getItem('userId');
+        const userRole = localStorage.getItem('userRole');
+        const userEmail = localStorage.getItem('userEmail');
+        const username = localStorage.getItem('username');
+
+        // دالة مساعدة: جلب معلمات URL (مثل booking_id)
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                bookingId: params.get('booking_id'),
+                token: params.get('token'),
+                paymentUrl: params.get('payment_url'),
+                status: params.get('status')
+            };
+        }
+
+        // دالة مساعدة: عرض تفاصيل الحجز على الواجهة
+        function displayBookingDetails(details) {
+            document.getElementById('field-name').textContent = details.field_name;
+            document.getElementById('booking-date').textContent = new Date(details.booking_date).toLocaleDateString();
+            document.getElementById('booking-time').textContent = `${details.start_time} - ${details.end_time}`;
+            document.getElementById('total-amount').textContent = `${details.total_amount} جنيه`;
+            document.getElementById('deposit-amount').textContent = `${details.deposit_amount} جنيه`;
+            
+            // حساب المبلغ المتبقي
+            const remaining = details.total_amount - details.deposit_amount;
+            document.getElementById('remaining-amount').textContent = `${remaining} جنيه`;
+            
+            document.getElementById('payment-info').style.display = 'block';
+        }
+
+        // دالة التعامل مع محاكاة تأكيد الدفع
+        async function handleConfirmPayment(bookingId) {
+            const btn = document.getElementById('confirmPaymentBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> جاري تأكيد الدفع...`;
+
+            try {
+                // محاكاة الحصول على مرجع دفع ناجح من بوابة الدفع
+                const mockPaymentRef = `PAYREF-MOCK-${Date.now()}`; 
+
+                // إرسال طلب التأكيد للـ Backend
+                const result = await apiRequest('/api/booking/confirm-payment', 'POST', {
+                    bookingId: bookingId,
+                    paymentRef: mockPaymentRef
+                });
+
+                showAlert(result.message, 'success');
+                
+                // التوجيه لصفحة الحجوزات بعد 3 ثوانٍ
+                setTimeout(() => {
+                    window.location.href = '/user.html?view=my-bookings';
+                }, 3000);
+
+            } catch (error) {
+                showAlert(error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'تأكيد الدفع (محاكاة نجاح)';
+            }
+        }
+
+        // الحصول على توكن CSRF
+        async function getCSRFToken() {
+            try {
+                const response = await fetch('/csrf-token', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                csrfToken = data.csrfToken;
+            } catch (error) {
+                console.error('Error getting CSRF token:', error);
+            }
+        }
+
+        // تحميل بيانات الحجز
+        async function loadBookingInfo() {
+            const { bookingId, paymentUrl, status } = getUrlParams();
+            
+            // 1. التحقق من التوجيه من Paymob
+            if (paymentUrl) {
+                // إذا كان رابط الدفع موجوداً، قم بالتوجيه فوراً
+                document.getElementById('loading').innerHTML = `
+                    <div class="text-center">
+                        <div class="spinner-border text-white" role="status"></div>
+                        <h2 class="mt-4 text-white">جاري توجيهك لصفحة الدفع الآمنة...</h2>
+                    </div>
+                `;
+                window.location.replace(paymentUrl);
+                return;
+            }
+            
+            // 2. معالجة حالة العودة من Paymob
+            if (status === 'success=true' || status === 'success=false') {
+                const isSuccess = status === 'success=true';
+                const bookingDetailsDiv = document.getElementById('bookingDetails');
+                
+                if (bookingDetailsDiv) bookingDetailsDiv.style.display = 'none'; 
+                
+                if (isSuccess) {
+                    showPaymentStatus('نجاح الدفع 🎉', 'تم تأكيد حجزك ودفع العربون بنجاح.', 'success');
+                    document.getElementById('paymentStatus').innerHTML += `<a href="/profile.html" class="btn btn-success mt-4">انتقل إلى حجوزاتي</a>`;
+                } else {
+                    showPaymentStatus('فشل الدفع ❌', 'فشلت عملية دفع العربون. يرجى المحاولة مرة أخرى.', 'danger');
+                    document.getElementById('paymentStatus').innerHTML += `<button class="btn btn-primary mt-4" onclick="handlePaymentCallback()">محاولة الدفع مرة أخرى</button>`;
+                }
+                return;
+            }
+            
+            // 3. معالجة حالة فشل التوجيه (لأسباب أمنية أو تأكيد سابق)
+            if (!bookingId) {
+                showAlert('❌ خطأ: لم يتم تحديد تفاصيل الحجز.', 'error');
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+
+            try {
+                showLoading(true);
+                // جلب تفاصيل الحجز من الـ API المحمي
+                const details = await apiRequest(`/api/booking/${bookingId}/details`, 'GET');
+                
+                if (details.status === 'booked_confirmed') {
+                    showAlert('✅ هذا الحجز مؤكد بالفعل. سيتم توجيهك الآن.', 'info');
+                    setTimeout(() => {
+                        window.location.href = '/user.html?view=my-bookings';
+                    }, 2000);
+                    return;
+                }
+
+                currentBooking = details;
+                displayBookingSummary();
+                displayUserInfo();
+                
+                // تحديث المبلغ المطلوب في قسم الأكواد
+                document.getElementById('requiredAmount').textContent = currentBooking.deposit_amount;
+                
+                // التحقق إذا كان المبلغ صفر بعد الخصم
+                checkFreeBooking();
+                
+            } catch (error) {
+                console.error('Error loading booking info:', error);
+                showAlert('حدث خطأ في تحميل بيانات الحجز', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // عرض معلومات المستخدم
+        function displayUserInfo() {
+            if (!userId) {
+                document.getElementById('userInfoSection').style.display = 'none';
+                document.getElementById('userInfoBadge').style.display = 'none';
+                showAlert('لم يتم العثور على بيانات المستخدم. يرجى تسجيل الدخول مرة أخرى.', 'error');
+                return;
+            }
+            
+            // تحديث البادج في الهيدر
+            document.getElementById('usernameDisplay').textContent = username || 'مستخدم';
+            
+            // تحديث قسم معلومات المستخدم
+            const userInfoGrid = document.getElementById('userInfoGrid');
+            userInfoGrid.innerHTML = `
+                <div class="user-info-item">
+                    <span class="user-info-label">اسم المستخدم:</span>
+                    <span class="user-info-value">${username || 'غير محدد'}</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">البريد الإلكتروني:</span>
+                    <span class="user-info-value">${userEmail || 'غير محدد'}</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">رقم المستخدم:</span>
+                    <span class="user-info-value">${userId}</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">نوع الحساب:</span>
+                    <span class="user-info-value">${userRole === 'admin' ? 'مدير' : userRole === 'vendor' ? 'مزود خدمة' : 'مستخدم عادي'}</span>
+                </div>
+            `;
+        }
+
+        // التحقق من الحجز المجاني
+        function checkFreeBooking() {
+            if (currentBooking.deposit_amount <= 0) {
+                document.getElementById('freeBookingSection').style.display = 'block';
+                document.getElementById('paymentMethodsSection').style.display = 'none';
+                document.getElementById('paymobSection').style.display = 'none';
+                document.getElementById('voucherSection').style.display = 'none';
+                document.getElementById('confirmPaymentBtn').style.display = 'none';
+            } else {
+                document.getElementById('freeBookingSection').style.display = 'none';
+                document.getElementById('paymentMethodsSection').style.display = 'block';
+            }
+        }
+
+        // تأكيد الحجز المجاني
+        async function confirmFreeBooking() {
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/confirm-free-booking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        bookingId: currentBooking.bookingId,
+                        userId: userId,
+                        method: 'free',
+                        amount: 0
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showPaymentStatus('success', '✅ تم تأكيد الحجز بنجاح!');
+                    
+                    // تسجيل العملية في السيرفر
+                    await recordPaymentTransaction('free', 0);
+                    
+                    setTimeout(() => {
+                        window.location.href = '/profile';
+                    }, 2000);
+                    
+                } else {
+                    throw new Error(result.message || 'فشل في تأكيد الحجز');
+                }
+                
+            } catch (error) {
+                console.error('Error confirming free booking:', error);
+                showAlert(`❌ فشل في تأكيد الحجز: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // عرض تفاصيل الحجز
+        function displayBookingSummary() {
+            const summaryItems = document.getElementById('summaryItems');
+            
+            const items = [
+                { label: 'الملعب', value: currentBooking.field_name || 'غير محدد' },
+                { label: 'التاريخ', value: new Date(currentBooking.booking_date).toLocaleDateString() },
+                { label: 'الوقت', value: `${currentBooking.start_time} - ${currentBooking.end_time}` },
+                { label: 'المبلغ الإجمالي', value: `${currentBooking.total_amount} جنيه` },
+                { label: 'مبلغ العربون', value: `${currentBooking.deposit_amount} جنيه` },
+                { 
+                    label: 'المبلغ المتبقي', 
+                    value: `${currentBooking.total_amount - currentBooking.deposit_amount} جنيه`,
+                    class: 'total'
+                }
+            ];
+            
+            summaryItems.innerHTML = items.map(item => `
+                <div class="summary-item ${item.class || ''}">
+                    <span>${item.label}:</span>
+                    <span>${item.value}</span>
+                </div>
+            `).join('');
+        }
+
+        // اختيار طريقة الدفع
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // إزالة التحديد من جميع الخيارات
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // إضافة التحديد للخيار المختار
+            document.getElementById(`option-${method}`).classList.add('selected');
+            
+            // إظهار/إخفاء الأقسام المناسبة
+            if (method === 'online') {
+                document.getElementById('paymobSection').style.display = 'block';
+                document.getElementById('voucherSection').style.display = 'none';
+                document.getElementById('confirmPaymentBtn').style.display = 'none';
+                resetVoucherValidation(); // إعادة تعيين الكود
+            } else if (method === 'voucher') {
+                document.getElementById('paymobSection').style.display = 'none';
+                document.getElementById('voucherSection').style.display = 'block';
+                document.getElementById('confirmPaymentBtn').style.display = 'block';
+                resetVoucherValidation();
+            }
+        }
+
+        // إعادة تعيين تحقق الكود
+        function resetVoucherValidation() {
+            validatedVoucher = null;
+            
+            // إعادة تعيين الحقول
+            document.getElementById('voucherCode').value = '';
+            
+            document.getElementById('codeValidationStatus').innerHTML = `
+                <i class="bi bi-dash-circle"></i>
+                <span>الكود: في انتظار الإدخال</span>
+            `;
+            
+            document.getElementById('totalValidation').innerHTML = `
+                <i class="bi bi-dash-circle"></i>
+                <span>المجموع المطلوب: ${currentBooking.deposit_amount} جنيه</span>
+            `;
+            
+            document.getElementById('codeValidation').style.display = 'block';
+            document.getElementById('confirmPaymentBtn').disabled = true;
+        }
+
+        // التحقق من كود الخصم
+        async function validateDiscountCode() {
+            const codeInput = document.getElementById('discountCode');
+            const code = codeInput.value.trim().toUpperCase();
+            const discountMessage = document.getElementById('discountMessage');
+            
+            if (!code) {
+                discountMessage.innerHTML = '<p style="color: #dc3545;">يرجى إدخال كود الخصم</p>';
+                return;
+            }
+            
+            if (!currentBooking || !currentBooking.pitchId) {
+                discountMessage.innerHTML = '<p style="color: #dc3545;">بيانات الحجز غير متوفرة</p>';
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/validate-discount-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        code: code,
+                        pitchId: currentBooking.pitchId,
+                        userId: userId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.valid) {
+                    appliedDiscount = result;
+                    discountMessage.innerHTML = `
+                        <p style="color: #1a7f46;">
+                            ✅ تم تطبيق الخصم بنجاح! خصم ${result.value} جنيه
+                        </p>
+                    `;
+                    codeInput.disabled = true;
+                    
+                    // تحديث المبلغ النهائي
+                    currentBooking.deposit_amount = Math.max(0, currentBooking.deposit_amount - result.value);
+                    displayBookingSummary();
+                    
+                    // تحديث المبلغ المطلوب في قسم الأكواد
+                    document.getElementById('requiredAmount').textContent = currentBooking.deposit_amount;
+                    
+                    // التحقق إذا أصبح الحجز مجاني
+                    checkFreeBooking();
+                    
+                } else {
+                    discountMessage.innerHTML = `<p style="color: #dc3545;">❌ ${result.message || 'كود غير صالح'}</p>`;
+                }
+                
+            } catch (error) {
+                console.error('Error validating discount code:', error);
+                discountMessage.innerHTML = '<p style="color: #dc3545;">حدث خطأ في التحقق من الكود</p>';
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // التحقق من كود الدفع
+        async function validateVoucher() {
+            const codeInput = document.getElementById('voucherCode');
+            const code = codeInput.value.trim().toUpperCase();
+            
+            if (!code) {
+                showAlert('يرجى إدخال كود الدفع', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/validate-voucher', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        voucherCode: code,
+                        bookingId: currentBooking.bookingId,
+                        userId: userId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.valid) {
+                    validatedVoucher = {
+                        code: code,
+                        value: result.value
+                    };
+                    
+                    updateVoucherValidationUI(result.value, true);
+                    showAlert(`✅ كود صالح - القيمة: ${result.value} جنيه`, 'success');
+                    
+                } else {
+                    validatedVoucher = null;
+                    updateVoucherValidationUI(0, false);
+                    showAlert(`❌ ${result.message || 'كود غير صالح'}`, 'error');
+                }
+                
+                checkPaymentReady();
+                
+            } catch (error) {
+                console.error('Error validating voucher code:', error);
+                showAlert('حدث خطأ في التحقق من الكود', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // تحديث واجهة تحقق الكود
+        function updateVoucherValidationUI(value, isValid) {
+            const validationElement = document.getElementById('codeValidationStatus');
+            const icon = isValid ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger';
+            const text = isValid ? 'صالح' : 'غير صالح';
+            
+            validationElement.innerHTML = `
+                <i class="bi ${icon}"></i>
+                <span>الكود: ${value} جنيه - ${text}</span>
+            `;
+            
+            // تحديث المجموع
+            updateTotalValidation();
+        }
+
+        // تحديث تحقق المجموع
+        function updateTotalValidation() {
+            const requiredAmount = currentBooking.deposit_amount;
+            const isValid = validatedVoucher && validatedVoucher.value >= requiredAmount;
+            const icon = isValid ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger';
+            const status = isValid ? 'مكتمل' : 'غير كافي';
+            
+            document.getElementById('totalValidation').innerHTML = `
+                <i class="bi ${icon}"></i>
+                <span>المجموع: ${validatedVoucher ? validatedVoucher.value : 0} جنيه / المطلوب: ${requiredAmount} جنيه - ${status}</span>
+            `;
+        }
+
+        // التحقق من جاهزية الدفع
+        function checkPaymentReady() {
+            const isReady = validatedVoucher !== null && 
+                          validatedVoucher.value >= currentBooking.deposit_amount;
+            
+            document.getElementById('confirmPaymentBtn').disabled = !isReady;
+        }
+
+        // بدء عملية الدفع عبر Paymob
+        async function initiatePaymobPayment() {
+            if (!currentBooking || !currentBooking.bookingId) {
+                showAlert('بيانات الحجز غير متوفرة', 'error');
+                return;
+            }
+
+            showLoading(true);
+            
+            try {
+                const response = await apiRequest("/api/payment/initiate", 'POST', { 
+                    bookingId: currentBooking.bookingId 
+                });
+                
+                const { paymentToken, iframeId } = response;
+                
+                if (paymentToken && iframeId) {
+                    // يتم توجيه المستخدم إلى صفحة Paymob iFrame للدفع
+                    const paymobUrl = `https://accept.paymob.com/api/acceptance/iframes/${iframeId}?payment_token=${paymentToken}`;
+                    window.location.href = paymobUrl;
+                    
+                } else {
+                    throw new Error("لم يتم استقبال مفتاح الدفع الصحيح.");
+                }
+
+            } catch (error) {
+                console.error('Error initiating Paymob payment:', error);
+                showAlert(`❌ فشل في بدء عملية الدفع: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // تأكيد الدفع باستخدام الكود
+        async function confirmPayment() {
+            if (selectedPaymentMethod !== 'voucher') {
+                return;
+            }
+
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/confirm-voucher-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        voucherCode: validatedVoucher.code,
+                        bookingId: currentBooking.bookingId,
+                        userId: userId,
+                        amount: currentBooking.deposit_amount
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showPaymentStatus('success', '✅ تم الدفع بنجاح باستخدام الكود! تم تأكيد حجزك.');
+                    
+                    // تسجيل العملية في السيرفر
+                    await recordPaymentTransaction('voucher', currentBooking.deposit_amount, [validatedVoucher.code]);
+                    
+                    setTimeout(() => {
+                        window.location.href = '/profile';
+                    }, 3000);
+                    
+                } else {
+                    throw new Error(result.message || 'فشل في تأكيد الدفع');
+                }
+                
+            } catch (error) {
+                console.error('Error confirming payment:', error);
+                showAlert(`❌ فشل في تأكيد الدفع: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // تسجيل عملية الدفع في السيرفر
+        async function recordPaymentTransaction(method, amount, voucherCodes = []) {
+            try {
+                await fetch('/api/record-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        bookingId: currentBooking.bookingId,
+                        method: method,
+                        amount: amount,
+                        userId: userId,
+                        voucherCodes: voucherCodes
+                    })
+                });
+            } catch (error) {
+                console.error('Error recording payment transaction:', error);
+                // لا نعرض خطأ للمستخدم لأن هذه عملية ثانوية
+            }
+        }
+
+        // دالة مساعدة: عرض التنبيهات في واجهة الدفع
+        function showAlert(message, type = 'info') {
+            const alertBox = document.getElementById('alertMessage');
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type}`;
+            alertBox.style.display = 'block';
+            setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+        }
+
+        // عرض حالة الدفع
+        function showPaymentStatus(type, message) {
+            const statusElement = document.getElementById('paymentStatus');
+            statusElement.innerHTML = `
+                <div class="status-${type}">
+                    <i class="bi bi-${type === 'success' ? 'check-circle' : 'x-circle'}" style="font-size: 48px;"></i>
+                    <h3 style="margin: 15px 0;">${message}</h3>
+                </div>
+            `;
+            statusElement.style.display = 'block';
+        }
+
+        // عرض/إخفاء التحميل
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // دالة API افتراضية (يجب استبدالها بالتنفيذ الفعلي)
+        async function apiRequest(url, method = 'GET', data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'X-CSRF-Token': csrfToken
+                },
+                credentials: 'include'
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            const response = await fetch(url, options);
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Request failed');
+            }
+            
+            return await response.json();
+        }
+
+        // التهيئة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // التحقق من بيانات المستخدم
+            if (!localStorage.getItem('token') || localStorage.getItem('role') !== 'player') {
+                showAlert('يجب تسجيل الدخول أولاً', 'error');
+                setTimeout(() => {
+                    window.location.href = '/auth.html';
+                }, 2000);
+                return;
+            }
+            
+            // عرض معلومات المستخدم
+            displayUserInfo();
+            
+            // تهيئة باقي الصفحة
+            getCSRFToken();
+            loadBookingInfo();
+        });
+
+        // تنظيف عند إغلاق الصفحة
+        window.addEventListener('beforeunload', function() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+            }
+        });
+    </script>
+</body>
+</html>
