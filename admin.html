@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الأدمن الرئيسي - نظام إدارة الملاعب</title>
+    
+    <!-- Bootstrap 5.3.3 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- التنسيقات الموحدة -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- الشريط الجانبي -->
+            <nav class="col-md-3 col-lg-2 sidebar d-md-block">
+                <div class="position-sticky pt-3">
+                    <div class="sidebar-brand text-center">
+                        <h4 class="mb-0 text-white">
+                            <i class="bi bi-speedometer2 me-2"></i>نظام الإدارة
+                        </h4>
+                        <small class="text-white-50" id="userRoleDisplay">الأدمن الرئيسي</small>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#dashboard" data-bs-toggle="tab">
+                                <i class="bi bi-house me-2"></i>لوحة التحكم
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#bookings" data-bs-toggle="tab">
+                                <i class="bi bi-calendar-check me-2"></i>إدارة الحجوزات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#stadiums" data-bs-toggle="tab">
+                                <i class="bi bi-map me-2"></i>إدارة الملاعب
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#time-slots" data-bs-toggle="tab">
+                                <i class="bi bi-clock me-2"></i>إدارة الساعات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#payments" data-bs-toggle="tab">
+                                <i class="bi bi-credit-card me-2"></i>المدفوعات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#users" data-bs-toggle="tab">
+                                <i class="bi bi-people me-2"></i>المستخدمين
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#managers" data-bs-toggle="tab">
+                                <i class="bi bi-person-gear me-2"></i>طلبات المديرين
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#reports" data-bs-toggle="tab">
+                                <i class="bi bi-graph-up me-2"></i>التقارير المتقدمة
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#notifications" data-bs-toggle="tab">
+                                <i class="bi bi-bell me-2"></i>الإشعارات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#activity-logs" data-bs-toggle="tab">
+                                <i class="bi bi-clock-history me-2"></i>سجل الأنشطة
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/" target="_blank">
+                                <i class="bi bi-globe me-2"></i>الموقع الرئيسي
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="sidebar-footer">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <small class="text-white-50" id="userInfoSidebar">مرحبًا بالأدمن</small>
+                            </div>
+                            <button class="btn btn-warning btn-sm" id="logoutBtn">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- المحتوى الرئيسي -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <!-- الهيدر -->
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div>
+                        <h1 class="h2" id="pageTitle">لوحة تحكم الأدمن</h1>
+                        <small class="text-muted" id="userInfo">مرحبًا بالأدمن الرئيسي</small>
+                    </div>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="exportBtn">
+                                <i class="bi bi-download me-1"></i>تصدير البيانات
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshBtn">
+                                <i class="bi bi-arrow-clockwise me-1"></i>تحديث
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="showHelp()">
+                                <i class="bi bi-question-circle me-1"></i>مساعدة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- نظام التنبيهات -->
+                <div id="alertsContainer"></div>
+
+                <!-- محتوى التبويبات -->
+                <div class="tab-content">
+                    <!-- تبويب لوحة التحكم -->
+                    <div class="tab-pane fade show active" id="dashboard">
+                        <!-- الإحصائيات العامة -->
+                        <div class="row mb-4">
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-primary text-white me-3">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="totalUsersCount">0</div>
+                                            <div class="stat-label">إجمالي المستخدمين</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-success text-white me-3">
+                                            <i class="bi bi-building"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="totalStadiumsCount">0</div>
+                                            <div class="stat-label">إجمالي الملاعب</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-info text-white me-3">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="totalBookingsCount">0</div>
+                                            <div class="stat-label">إجمالي الحجوزات</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card card-hover">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-warning text-white me-3">
+                                            <i class="bi bi-currency-dollar"></i>
+                                        </div>
+                                        <div>
+                                            <div class="stat-number" id="totalRevenueAmount">0</div>
+                                            <div class="stat-label">إجمالي الإيرادات</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الرسوم البيانية -->
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="chart-container">
+                                    <h5 class="mb-3">إحصائيات الحجوزات - آخر 30 يوم</h5>
+                                    <canvas id="bookingsChart" height="250"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="chart-container">
+                                    <h5 class="mb-3">توزيع الملاعب</h5>
+                                    <canvas id="stadiumsChart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الحجوزات الحديثة -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="chart-container">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="mb-0">أحدث الحجوزات</h5>
+                                        <a href="#bookings" class="btn btn-sm btn-outline-primary">عرض الكل</a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>العميل</th>
+                                                    <th>الملعب</th>
+                                                    <th>التاريخ</th>
+                                                    <th>الوقت</th>
+                                                    <th>المبلغ</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentBookingsTable">
+                                                <tr>
+                                                    <td colspan="7" class="text-center text-muted py-4">جاري تحميل البيانات...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب إدارة الحجوزات -->
+                    <div class="tab-pane fade" id="bookings">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>إدارة الحجوزات</h4>
+                            <div class="filter-section d-flex gap-2">
+                                <select class="form-select" id="statusFilter" style="width: auto;">
+                                    <option value="">جميع الحالات</option>
+                                    <option value="confirmed">مؤكد</option>
+                                    <option value="pending">قيد الانتظار</option>
+                                    <option value="cancelled">ملغي</option>
+                                </select>
+                                <select class="form-select" id="pitchFilter" style="width: auto;">
+                                    <option value="">جميع الملاعب</option>
+                                </select>
+                                <input type="date" class="form-control" id="dateFilter" style="width: auto;">
+                                <button class="btn btn-primary" onclick="system.loadBookings(getBookingFilters())">
+                                    <i class="bi bi-funnel me-1"></i>تصفية
+                                </button>
+                                <button class="btn btn-success" onclick="system.exportData('csv', 'bookings')">
+                                    <i class="bi bi-file-earmark-excel me-1"></i>تصدير
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>العميل</th>
+                                        <th>الملعب</th>
+                                        <th>التاريخ</th>
+                                        <th>الوقت</th>
+                                        <th>المبلغ</th>
+                                        <th>العربون</th>
+                                        <th>الحالة</th>
+                                        <th>تاريخ الإنشاء</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingsTable">
+                                    <tr>
+                                        <td colspan="10" class="text-center text-muted py-4">جاري تحميل الحجوزات...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- تبويب إدارة الملاعب -->
+                    <div class="tab-pane fade" id="stadiums">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>إدارة الملاعب</h4>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStadiumModal">
+                                <i class="bi bi-plus-circle me-1"></i>إضافة ملعب
+                            </button>
+                        </div>
+
+                        <!-- فلترة الملاعب -->
+                        <div class="card mb-4 card-hover">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="search-box">
+                                            <input type="text" class="form-control" id="searchStadiums" placeholder="ابحث باسم الملعب...">
+                                            <i class="bi bi-search"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-select" id="filterArea">
+                                            <option value="">جميع المناطق</option>
+                                            <option value="mokatam">المقطم</option>
+                                            <option value="hedaba">الهضبة الوسطي</option>
+                                            <option value="70feddan">السبعين فدان</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-select" id="filterType">
+                                            <option value="">جميع الأنواع</option>
+                                            <option value="natural">نجيلة طبيعية</option>
+                                            <option value="artificial">نجيلة صناعية</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- قائمة الملاعب -->
+                        <div class="row" id="stadiumsContainer">
+                            <div class="col-12">
+                                <div class="text-center py-4">
+                                    <div class="loading-spinner mb-2"></div>
+                                    <p class="text-muted">جاري تحميل الملاعب...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب إدارة الساعات -->
+                    <div class="tab-pane fade" id="time-slots">
+                        <div class="card card-hover">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="bi bi-clock me-2"></i>إدارة ساعات الملعب
+                                </h5>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">اختر الملعب</label>
+                                        <select class="form-select" id="stadiumSelect">
+                                            <option value="">اختر الملعب</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">اختر التاريخ</label>
+                                        <input type="date" class="form-control" id="slotDate">
+                                    </div>
+                                </div>
+
+                                <div id="timeSlotsContainer">
+                                    <div class="empty-state">
+                                        <i class="bi bi-clock"></i>
+                                        <h5>اختر الملعب والتاريخ</h5>
+                                        <p>لعرض الساعات المتاحة وإدارتها</p>
+                                    </div>
+                                </div>
+
+                                <!-- إضافة ساعات جديدة -->
+                                <div class="mt-4" id="addTimeSlotsSection" style="display: none;">
+                                    <hr>
+                                    <h6>إضافة ساعات جديدة</h6>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">من الساعة</label>
+                                            <input type="time" class="form-control" id="startTime" value="08:00">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">إلى الساعة</label>
+                                            <input type="time" class="form-control" id="endTime" value="22:00">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">&nbsp;</label>
+                                            <button class="btn btn-success w-100" onclick="addTimeSlots()">
+                                                <i class="bi bi-plus-circle me-1"></i>إضافة الساعات
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب المدفوعات -->
+                    <div class="tab-pane fade" id="payments">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>إدارة المدفوعات</h4>
+                            <div class="filter-section d-flex gap-2">
+                                <select class="form-select" id="paymentStatusFilter" style="width: auto;">
+                                    <option value="">جميع الحالات</option>
+                                    <option value="pending">قيد الانتظار</option>
+                                    <option value="paid">مدفوع</option>
+                                    <option value="failed">فاشل</option>
+                                </select>
+                                <select class="form-select" id="paymentProviderFilter" style="width: auto;">
+                                    <option value="">جميع مزودي الدفع</option>
+                                    <option value="vodafone_cash">فودافون كاش</option>
+                                    <option value="instapay">انستاباي</option>
+                                    <option value="cash">نقدي</option>
+                                </select>
+                                <input type="date" class="form-control" id="paymentDateFrom" style="width: auto;" placeholder="من تاريخ">
+                                <input type="date" class="form-control" id="paymentDateTo" style="width: auto;" placeholder="إلى تاريخ">
+                                <button class="btn btn-primary" onclick="filterPayments()">
+                                    <i class="bi bi-funnel me-1"></i>تصفية
+                                </button>
+                                <button class="btn btn-success" onclick="system.exportData('csv', 'payments')">
+                                    <i class="bi bi-file-earmark-excel me-1"></i>تصدير
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>اسم الدافع</th>
+                                        <th>المبلغ</th>
+                                        <th>الحالة</th>
+                                        <th>مزود الدفع</th>
+                                        <th>التاريخ</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">جاري تحميل المدفوعات...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- تبويب المستخدمين -->
+                    <div class="tab-pane fade" id="users">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>إدارة المستخدمين</h4>
+                            <div class="filter-section d-flex gap-2">
+                                <select class="form-select" id="userRoleFilter" style="width: auto;">
+                                    <option value="">جميع الصلاحيات</option>
+                                    <option value="admin">مسؤول</option>
+                                    <option value="owner">مدير</option>
+                                    <option value="employee">موظف</option>
+                                    <option value="player">لاعب</option>
+                                </select>
+                                <select class="form-select" id="userStatusFilter" style="width: auto;">
+                                    <option value="">جميع الحالات</option>
+                                    <option value="approved">مفعل</option>
+                                    <option value="pending">قيد الانتظار</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="filterUsers()">
+                                    <i class="bi bi-funnel me-1"></i>تصفية
+                                </button>
+                                <button class="btn btn-success" onclick="system.exportData('csv', 'users')">
+                                    <i class="bi bi-file-earmark-excel me-1"></i>تصدير
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>اسم المستخدم</th>
+                                        <th>البريد الإلكتروني</th>
+                                        <th>نوع الحساب</th>
+                                        <th>حالة الموافقة</th>
+                                        <th>تاريخ التسجيل</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">جاري تحميل المستخدمين...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- تبويب طلبات المديرين -->
+                    <div class="tab-pane fade" id="managers">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>طلبات المديرين المعلقة</h4>
+                            <div class="badge bg-warning text-dark" id="pendingManagersCount">0 طلب</div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>اسم المستخدم</th>
+                                        <th>البريد الإلكتروني</th>
+                                        <th>الملاعب المطلوبة</th>
+                                        <th>حالة الموافقة</th>
+                                        <th>تاريخ الطلب</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pendingManagersTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">جاري تحميل طلبات المديرين...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- تبويب التقارير المتقدمة -->
+                    <div class="tab-pane fade" id="reports">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>التقارير والإحصائيات</h4>
+                            <div class="export-buttons">
+                                <button class="btn btn-success" onclick="generateReport()">
+                                    <i class="bi bi-plus-circle me-1"></i>إنشاء تقرير جديد
+                                </button>
+                                <button class="btn btn-primary" onclick="system.exportData('pdf', 'reports')">
+                                    <i class="bi bi-file-pdf me-1"></i>تصدير PDF
+                                </button>
+                                <button class="btn btn-success" onclick="system.exportData('excel', 'reports')">
+                                    <i class="bi bi-file-excel me-1"></i>تصدير Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- إحصائيات سريعة -->
+                        <div class="row">
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100 card-hover">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-primary" id="reportTotalUsers">0</h3>
+                                        <p class="text-muted">إجمالي المستخدمين</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100 card-hover">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-success" id="reportTotalBookings">0</h3>
+                                        <p class="text-muted">إجمالي الحجوزات</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100 card-hover">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-info" id="reportTotalRevenue">0</h3>
+                                        <p class="text-muted">إجمالي الإيرادات</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100 card-hover">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-warning" id="reportActiveStadiums">0</h3>
+                                        <p class="text-muted">الملاعب النشطة</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- رسم بياني شهري -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="chart-container">
+                                    <h5 class="mb-3">الإيرادات الشهرية - آخر 6 أشهر</h5>
+                                    <canvas id="revenueChart" height="150"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب الإشعارات -->
+                    <div class="tab-pane fade" id="notifications">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card card-hover">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0"><i class="bi bi-send me-2"></i>إرسال إشعار جديد</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="notificationForm">
+                                            <div class="mb-3">
+                                                <label class="form-label">عنوان الإشعار</label>
+                                                <input type="text" class="form-control" id="notificationTitle" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">نص الإشعار</label>
+                                                <textarea class="form-control" id="notificationMessage" rows="3" required></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">نوع الإشعار</label>
+                                                <select class="form-select" id="notificationType">
+                                                    <option value="info">معلومات</option>
+                                                    <option value="success">نجاح</option>
+                                                    <option value="warning">تحذير</option>
+                                                    <option value="error">خطأ</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">المستخدم المستهدف</label>
+                                                <select class="form-select" id="notificationUser">
+                                                    <option value="all">جميع المستخدمين</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                <i class="bi bi-send me-1"></i>إرسال الإشعار
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card card-hover">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>سجل الإشعارات المرسلة</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="notificationsHistory" style="max-height: 400px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-4">جاري تحميل الإشعارات...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تبويب سجل الأنشطة -->
+                    <div class="tab-pane fade" id="activity-logs">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>سجل الأنشطة</h4>
+                            <div class="filter-section d-flex gap-2">
+                                <select class="form-select" id="activityUserFilter" style="width: auto;">
+                                    <option value="">جميع المستخدمين</option>
+                                </select>
+                                <select class="form-select" id="activityActionFilter" style="width: auto;">
+                                    <option value="">جميع الإجراءات</option>
+                                    <option value="login">تسجيل دخول</option>
+                                    <option value="create">إنشاء</option>
+                                    <option value="update">تحديث</option>
+                                    <option value="delete">حذف</option>
+                                </select>
+                                <input type="date" class="form-control" id="activityDateFrom" style="width: auto;" placeholder="من تاريخ">
+                                <input type="date" class="form-control" id="activityDateTo" style="width: auto;" placeholder="إلى تاريخ">
+                                <button class="btn btn-primary" onclick="filterActivityLogs()">
+                                    <i class="bi bi-funnel me-1"></i>تصفية
+                                </button>
+                                <button class="btn btn-success" onclick="system.exportData('csv', 'activity-logs')">
+                                    <i class="bi bi-file-earmark-excel me-1"></i>تصدير
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card card-hover">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>المستخدم</th>
+                                                <th>الإجراء</th>
+                                                <th>الوصف</th>
+                                                <th>عنوان IP</th>
+                                                <th>التاريخ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="activityLogsTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-4">جاري تحميل سجل الأنشطة...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- المودالات -->
+    <!-- مودال إضافة ملعب -->
+    <div class="modal fade modal-blur" id="addStadiumModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-scale">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">إضافة ملعب جديد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStadiumForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">اسم الملعب *</label>
+                                    <input type="text" class="form-control" name="name" required placeholder="أدخل اسم الملعب">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">الموقع *</label>
+                                    <input type="text" class="form-control" name="location" required placeholder="أدخل عنوان الملعب">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">المنطقة *</label>
+                                    <select class="form-select" name="area" required>
+                                        <option value="">اختر المنطقة</option>
+                                        <option value="mokatam">المقطم</option>
+                                        <option value="hedaba">الهضبة الوسطي</option>
+                                        <option value="70feddan">السبعين فدان</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">السعر (ج.م/ساعة) *</label>
+                                    <input type="number" class="form-control" name="price" required min="100" placeholder="أدخل السعر">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">نوع النجيلة *</label>
+                                    <select class="form-select" name="type" required>
+                                        <option value="">اختر نوع النجيلة</option>
+                                        <option value="artificial">نجيلة صناعية</option>
+                                        <option value="natural">نجيلة طبيعية</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">صورة الملعب (URL)</label>
+                                    <input type="url" class="form-control" name="image" placeholder="https://example.com/stadium.jpg">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">المميزات (افصل بينها بفاصلة)</label>
+                            <input type="text" class="form-control" name="features" placeholder="كشافات ليلية, غرف تبديل, موقف سيارات...">
+                        </div>
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-info-circle me-2"></i>ملاحظة</h6>
+                            <p class="mb-0">سيتم إنشاء ساعات افتراضية للملعب الجديد للـ 7 أيام القادمة تلقائياً.</p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success" onclick="document.getElementById('addStadiumForm').dispatchEvent(new Event('submit'))">إضافة الملعب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال المساعدة -->
+    <div class="modal fade modal-blur" id="helpModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-scale">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-question-circle me-2"></i>مركز المساعدة
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>الدوال المتاحة:</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item">✅ إدارة الملاعب الكاملة</li>
+                                <li class="list-group-item">✅ إدارة الحجوزات</li>
+                                <li class="list-group-item">✅ إدارة المستخدمين</li>
+                                <li class="list-group-item">✅ نظام المدفوعات</li>
+                                <li class="list-group-item">✅ التقارير والإحصائيات</li>
+                                <li class="list-group-item">✅ نظام الإشعارات</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>الإجراءات السريعة:</h6>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" onclick="system.loadInitialData()">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>تحديث الكل
+                                </button>
+                                <button class="btn btn-outline-success" onclick="system.exportData('json', 'all')">
+                                    <i class="bi bi-download me-1"></i>تصدير البيانات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        // دوال مساعدة للواجهة
+        function getBookingFilters() {
+            return {
+                status: document.getElementById('statusFilter').value,
+                pitch_id: document.getElementById('pitchFilter').value,
+                date: document.getElementById('dateFilter').value
+            };
+        }
+
+        function showHelp() {
+            new bootstrap.Modal(document.getElementById('helpModal')).show();
+        }
+
+        function generateReport() {
+            const reportType = prompt('اختر نوع التقرير:\n1. تقرير شهري\n2. تقرير ربع سنوي\n3. تقرير سنوي', '1');
+            if (reportType) {
+                system.generateReport({
+                    type: reportType === '1' ? 'monthly' : reportType === '2' ? 'quarterly' : 'yearly',
+                    start_date: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
+                    end_date: new Date().toISOString().split('T')[0]
+                });
+            }
+        }
+
+        // تهيئة التواريخ
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                if (!input.value) {
+                    input.value = today;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
